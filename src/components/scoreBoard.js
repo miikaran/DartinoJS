@@ -1,5 +1,5 @@
 
-export default function scoreBoard(){
+export default function ScoreBoard(){
     return(
         <div></div>
     )
