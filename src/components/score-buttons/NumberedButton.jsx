@@ -1,4 +1,5 @@
 import React from "react";
+import ScoreButtonClickHandler from "./ScoreButtonClickHandler";
 
 const numberOfButtons = 20
 
@@ -7,7 +8,11 @@ const NumberedButton = () => {
     return (
         <div className="numbered-buttons">
             {Array.from({length: numberOfButtons}, (_, buttonIndex) => (
-                <button key={buttonIndex} className="numbered-button">
+                <button
+                    key={buttonIndex}
+                    className="numbered-button"
+                    onClick={() => ScoreButtonClickHandler(buttonIndex)}
+                >
                     {buttonIndex + 1}
                 </button>
             ))}
