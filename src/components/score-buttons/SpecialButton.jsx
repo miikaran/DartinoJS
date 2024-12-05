@@ -1,4 +1,5 @@
 import React from "react";
+import ScoreButtonClickHandler from "./ScoreButtonClickHandler";
 
 const specialButtons = ['Double', 'Triple', 'Out', 'Undo'];
 
@@ -7,9 +8,13 @@ const specialButtons = ['Double', 'Triple', 'Out', 'Undo'];
  */
 const SpecialButton = () => {
     return (
-        <div className="special-button">
+        <div className="special-buttons">
             {specialButtons.map((specialButtonName, buttonIndex) => (
-                <button key={buttonIndex} className="special-button">
+                <button
+                    key={buttonIndex}
+                    className="special-button"
+                    onClick={() => ScoreButtonClickHandler(specialButtonName, true)}
+                >
                     {specialButtonName}
                 </button>
             ))}
