@@ -124,13 +124,6 @@ function App() {
   }
 
   return (
-    <GameDataContext.Provider value={{
-      players, setPlayers, 
-      gameMode, setGameMode, 
-      turn, setTurn, 
-      legsToPlay, setLegsToPlay, 
-      legsToWin, setLegsToWin}} 
-    >
       <div className="gameContainer">
         <div className="gameSettings">
           <div 
@@ -181,8 +174,6 @@ function App() {
           </div>
         </div>
       </div>
-
-    </GameDataContext.Provider>
   );
 }
 
