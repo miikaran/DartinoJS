@@ -1,4 +1,20 @@
 .App {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
 }
 
+.gameContainer{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gameSettings{
+  width: 50%;
+  font-size: 1.5em;
+  background-color: rgb(7, 31, 54);
+  color: white;
+  padding: 20px;
+}
