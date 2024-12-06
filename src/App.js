@@ -18,7 +18,7 @@ function App() {
   }
   
   const [players, setPlayers] = useState([]);
-  const [gameMode, setGameMode] = useState()
+  const [gameMode, setGameMode] = useState(gameModes[0])
   const [turn, setTurn] = useState();
   const [legsToPlay, setLegsToPlay] = useState();
   const [legsToWin, setLegsToWin] = useState()
@@ -90,15 +90,15 @@ function App() {
   }
 
   const validGameSettings = () => {
-    const invalidMessages = []
+    const invalidMessages = {}
     if(!gameModes.includes(gameMode)){
-      invalidMessages.push("Choose valid game mode")
+      invalidMessages["mode"] = "Choose valid game mode"
     } 
     if(!legsToPlay || legsToPlay > legsLimit){
-      invalidMessages.push("Choose valid legs amount")
+      invalidMessages["legs"] = "Choose valid legs amount"
     } 
     if(players.length == 0){
-      invalidMessages.push(`Add minimum ${minPlayers} to play`)
+      invalidMessages["players"] = `Add minimum ${minPlayers} to play`
     } 
     if(invalidMessages){
       setInvalidGameSettings(invalidMessages)
@@ -114,10 +114,12 @@ function App() {
     }
   }
 
-  const getSettingErrors = () => {
-    return invalidGameSettings.map((message) => {
-      return <li>{message}</li>
-    })
+  const getSettingError = (type) => {
+    if(type in invalidGameSettings){
+      const message = invalidGameSettings[type]
+      return <p className="error">{message}</p>
+    }
+
   }
 
   return (
@@ -131,8 +133,9 @@ function App() {
       <div className="gameContainer">
         <div className="gameSettings">
           <div 
-          uniquetype="gameMode"
+          uniquetype="mode"
           className='gameMode'>
+            {getSettingError("mode")}
             <label>Game mode</label>
             <select 
               onChange={(e) => handleGameMode(e)}>
@@ -140,7 +143,8 @@ function App() {
             </select>
           </div>
           <div 
-          className="legsToPlay">
+          className="legs">
+            {getSettingError("legs")}
             <label>Legs</label>
             <select 
               uniquetype="legsToPlay"
@@ -151,6 +155,7 @@ function App() {
           <div 
           uniquetype="players"
           className="players">
+            {getSettingError("players")}
             <label>Add players</label>
             <div>
               <input 
@@ -173,16 +178,6 @@ function App() {
             className="startGameButton"
             >Start game</button>
           </div>
-          {
-            invalidGameSettings.length > 0
-            &&
-            <div className="errorContainer">
-              <p>Errors detected:</p>
-              <ol>
-                {getSettingErrors()}
-              </ol>
-            </div>
-          }
         </div>
       </div>
 
