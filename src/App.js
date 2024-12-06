@@ -11,7 +11,6 @@ function App() {
   const legsLimit = 5;
   const playerDataSchema = {
     "userName": null,
-    "totalPoints": 0,
     "legPoints": 0,
     "totalPoints": 0,
     "wonGames": 0,
