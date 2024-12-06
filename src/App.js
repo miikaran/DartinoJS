@@ -1,7 +1,12 @@
 import './App.css';
+<<<<<<< Updated upstream
 import { useState, useRef } from 'react';
 import { GameDataContext } from './context/GameContext';
 import PlayerCard from './components/PlayerCard';
+=======
+import ContextTestPrints from './components/ContextTestPrints'; // Update the path as necessary
+import ScoreButtonGrid from "./components/score-buttons/ScoreButtonGrid";
+>>>>>>> Stashed changes
 
 function App() {
 
@@ -123,6 +128,7 @@ function App() {
   }
 
   return (
+<<<<<<< Updated upstream
     <GameDataContext.Provider value={{
       players, setPlayers, 
       gameMode, setGameMode, 
@@ -182,6 +188,13 @@ function App() {
       </div>
 
     </GameDataContext.Provider>
+=======
+    <div className="App">
+        <h1>Hello World!</h1>
+        <ScoreButtonGrid />
+        <ContextTestPrints />
+    </div>
+>>>>>>> Stashed changes
   );
 }
 
