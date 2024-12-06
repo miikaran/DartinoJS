@@ -1,6 +1,7 @@
 import React from 'react';
 import SpecialButton from "./SpecialButton";
 import NumberedButton from "./NumberedButton";
+import './ScoreButtonGridStyles.css';
 
 /* This is base for the score grid formed by buttons */
 const ScoreButtonGrid = () => {
