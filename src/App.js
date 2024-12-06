@@ -1,12 +1,7 @@
 import './App.css';
-<<<<<<< Updated upstream
-import { useState, useRef } from 'react';
-import { GameDataContext } from './context/GameContext';
+import { useState, useContext } from 'react';
+import { GameDataContext } from './context/GameDataContext';
 import PlayerCard from './components/PlayerCard';
-=======
-import ContextTestPrints from './components/ContextTestPrints'; // Update the path as necessary
-import ScoreButtonGrid from "./components/score-buttons/ScoreButtonGrid";
->>>>>>> Stashed changes
 
 function App() {
 
@@ -21,13 +16,15 @@ function App() {
     "totalPoints": 0,
     "wonGames": 0,
   }
-  
-  const [players, setPlayers] = useState([]);
-  const [gameMode, setGameMode] = useState(gameModes[0])
-  const [turn, setTurn] = useState();
-  const [legsToPlay, setLegsToPlay] = useState();
-  const [legsToWin, setLegsToWin] = useState()
-  const [gameOn, setGameOn] = useState(false)
+
+  const {
+      players, setPlayers,
+      gameMode, setGameMode,
+      turn, setTurn,
+      legsToPlay, setLegsToPlay,
+      legsToWin, setLegsToWin,
+      gameOn, setGameOn
+  } = useContext(GameDataContext) 
 
   const [invalidPlayerError, setInvalidPlayerError] = useState()
   const [newPlayerInput, setNewPlayerInput] = useState()
@@ -128,7 +125,6 @@ function App() {
   }
 
   return (
-<<<<<<< Updated upstream
     <GameDataContext.Provider value={{
       players, setPlayers, 
       gameMode, setGameMode, 
@@ -188,13 +184,6 @@ function App() {
       </div>
 
     </GameDataContext.Provider>
-=======
-    <div className="App">
-        <h1>Hello World!</h1>
-        <ScoreButtonGrid />
-        <ContextTestPrints />
-    </div>
->>>>>>> Stashed changes
   );
 }
 
