@@ -48,3 +48,69 @@
     background-color: rgba(24, 69, 97, 0.842); 
     border-left: solid 5px #628ea7;
 }
+
+.playerCardTop{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.historyModal{
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.445);
+    position: fixed;
+    z-index: 1;
+}
+.historyModalContent{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: start;
+    background-color: #010d13;
+    margin: 15% auto;
+    height: fit-content;
+    width: fit-content;
+}
+
+.historyRecordInput{
+    font-size: 1em;
+    width: 8vw;
+    padding: 10px;
+    color: white;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.37);
+}
+
+.historyTableHeaders{
+    background-color: rgb(6, 23, 39);
+}
+
+.historyTableBody{
+    background-color: rgba(23, 59, 80, 0.226);
+}
+
+.historyHeader{
+    text-align: start;
+    font-size: 1.1em;
+    padding: 10px;
+}
+
+.historyInfoHeaders{
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.close{
+    align-self: start;
+    background-color: rgb(216, 77, 77);
+    color: white;
+    border: none;
+    font-size: 1.3em;
+    padding: 5px 10px;
+
+}
