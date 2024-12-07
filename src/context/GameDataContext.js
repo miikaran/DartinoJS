@@ -14,25 +14,41 @@ const GameDataProvider = ({ children }) => {
     const [legsToWin, setLegsToWin] = useState()
     const [gameOn, setGameOn] = useState(false)
 
+    // This is a monster and will refactor later and move it
+    /* responsible for updating the points */
+    const updatePlayerPoints = (usernameOfThePlayer, pointType, newValue) => {
+        const areAllThrowsComplete = (points) =>
+            points.firstThrow !== 0 && points.secondThrow !== 0 && points.thirdThrow !== 0;
 
-    /**
-     * Updates a specific type of point for a player identified by their username.
-     *
-     * @param {string} playerUserName - Username of the player whose points should be updated.
-     * @param {string} typeOfPoint - Type of point that needs to be updated.
-     * @param {number} updatedValue - New value to assign to the specified type of point.
-     */
-    const updatePlayerPoints = (playerUserName, typeOfPoint, updatedValue) => {
-        const updatePoints = player => ({
-            ...player,
-            points: {...player.points,  [typeOfPoint]: updatedValue}
-        });
+        const updatePoints = (player) => {
+            const updatedPoints = { ...player.points, [pointType]: newValue };
+            if (areAllThrowsComplete(updatedPoints)) moveToNextTurn(usernameOfThePlayer);
+            return {...player, points: updatedPoints};
+        };
 
-        setPlayers(prevPlayers =>
-            prevPlayers.map(player =>
-                player.userName === playerUserName
-                    ? updatePoints(player)
-                    : player
+        /**
+         * Identifies the current player based on their username,
+         * determines the next player, and updates the game state
+         * for current user with turn.
+         *
+         * @param {string} currentNameOfThePlayer - Username of the current player whose turn is ending.
+         */
+        const moveToNextTurn = (currentNameOfThePlayer) => {
+            setPlayers((prevPlayers) => {
+                const currentPlayerIndex = prevPlayers.findIndex(
+                    (player) => player.userName === currentNameOfThePlayer
+                );
+                if (currentPlayerIndex === -1) return prevPlayers;
+                const nextPlayerIndex = (currentPlayerIndex + 1) % prevPlayers.length;
+                const nextPlayer = prevPlayers[nextPlayerIndex];
+                setTurn(nextPlayer.userName);
+                return prevPlayers;
+            });
+        };
+
+        setPlayers((prevPlayers) =>
+            prevPlayers.map((player) =>
+                player.userName === usernameOfThePlayer ? updatePoints(player) : player
             )
         );
     };
