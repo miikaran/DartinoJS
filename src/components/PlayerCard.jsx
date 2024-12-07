@@ -3,37 +3,27 @@ import { GameDataContext } from "../context/GameDataContext"
 import { useContext } from "react"
 
 const PlayerCard = ({player}) => {
+    const { updatePlayerPoints } = useContext(GameDataContext)
 
-    const {points, setPlayerData} = useContext(GameDataContext)
-
-    const updatePlayerPoints = (e) => {
+    const handlePointChange = (e) => {
         const pointToEdit = e.target.id
         const newValue = parseInt(e.target.value) || 0
-        setPlayerData((prev) => 
-            prev.map((p) =>
-                p.userName === player.userName
-                    ? { ...p, [pointToEdit]: newValue }
-                    : p
-            )
-        );
+        updatePlayerPoints(player.userName, pointToEdit, newValue)
     }
 
     const PointBox = ({turns}) => {
-        return turns.map((turn, index) => {
-            return (
-                <div className="pointBox">
-                    <input 
-                        value={player["points"][turn]}
-                        key={index}
-                        id={turns[index]}
-                        className="pointInput" 
-                        onChange={(e) => updatePlayerPoints(e)} 
-                        />
-                </div>
-            )
-        })
+        return turns.map((turn, index) => (
+            <div className="pointBox" key={index}>
+                <input
+                    value={player["points"][turn]}
+                    id={turn}
+                    className="pointInput"
+                    onChange={handlePointChange}
+                />
+            </div>
+        ));
     }
-    
+
     return(
         <div className="playerCard">
             <span className="userName">🧑 {player.userName}</span>

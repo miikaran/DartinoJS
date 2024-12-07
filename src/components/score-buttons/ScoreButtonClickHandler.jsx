@@ -1,9 +1,8 @@
-// ScoreButtonHandlerComponent.jsx
 import React, { useContext } from 'react';
 import { GameDataContext } from '../../context/GameDataContext';
 
 const ScoreButtonHandlerComponent = ({ children }) => {
-    const { setPoints } = useContext(GameDataContext);
+    const { updatePlayerPoints, players, turn } = useContext(GameDataContext);
 
     let specialValue = null;
     let chosenValue = "";
@@ -22,15 +21,8 @@ const ScoreButtonHandlerComponent = ({ children }) => {
         }
 
         chosenValue = numberedValue;
+        updateScores(numberedValue); // Update points directly based on the button click
     };
-
-    /* Updates the points in context */
-    const updatePoints = (pointsReceived) => {
-        setPoints(prevPoints => {
-            const existingPoints = prevPoints[chosenValue] || 0;
-            return { ...prevPoints, [chosenValue]: existingPoints + pointsReceived };
-        });
-    }
 
     const handleSpecialButton = (button) => {
         specialValue = button.charAt(0).toUpperCase();
@@ -38,20 +30,15 @@ const ScoreButtonHandlerComponent = ({ children }) => {
 
     const handleCombinedValue = (special, numbered) => {
         chosenValue = `${special}${numbered}`;
-        console.log(chosenValue);
 
-        try {
-            const pointsReceived = calculatePoints(special, numbered);
-            updatePoints(pointsReceived);
-        } catch (error) {
-            console.log(`Error calculating points: ${error.message}`);
-        }
+        const pointsReceived = calculatePoints(special, numbered);
+        updateScores(pointsReceived);
 
         specialValue = null;
     };
 
     const getNumberedButtonValue = (numberedButtonID) => {
-        return numberedButtonID + 1;
+        return parseInt(numberedButtonID) + 1;
     };
 
     const calculatePoints = (special, numbered) => {
@@ -61,18 +48,40 @@ const ScoreButtonHandlerComponent = ({ children }) => {
             case 'T':
                 return numbered * 3;
             case 'O':
-                return 0; // Handle OUT action
+                return 0;
             case 'U':
-                return 0; // Handle UNDO action
+                return 0; // Consider adding functionality to "undo" the last score if this is desired
             default:
                 throw new Error(`Unrecognized special value: ${special}.`);
         }
     };
 
-    // Had invalid hooks errors so needed to make this
-    // a React component and do this React shit.
-    // So now this fucker needs to be used as a wrapper.
-    return ( <div> {children({ onButtonClick: handleClick})} </div> );
+    const updateScores = (points) => {
+        const player = players.find(p => p.userName === turn);
+        if (player) {
+            const updatedFirstAvailableThrowKey = findNextEmptyThrow(player.points);
+
+            if (updatedFirstAvailableThrowKey) {
+                const updatedTurnPoints = player.points.turnPoints + points;
+                const updatedTotalPoints = player.points.totalPoints + points;
+                updatePlayerPoints(player.userName, updatedFirstAvailableThrowKey, points);
+                updatePlayerPoints(player.userName, "turnPoints", updatedTurnPoints);
+                updatePlayerPoints(player.userName, "totalPoints", updatedTotalPoints);
+            }
+        }
+    };
+
+    /* Used to find the empty throw field  */
+    const findNextEmptyThrow = (points) => {
+        if (points.firstThrow === 0) return "firstThrow";
+        if (points.secondThrow === 0) return "secondThrow";
+        if (points.thirdThrow === 0) return "thirdThrow";
+        return null;
+    };
+
+    return (
+        <div>{children({ onButtonClick: handleClick })}</div>
+    );
 };
 
 export default ScoreButtonHandlerComponent;

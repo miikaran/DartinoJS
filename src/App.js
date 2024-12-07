@@ -3,6 +3,7 @@ import { useState, useContext } from 'react';
 import { GameDataContext } from './context/GameDataContext';
 import PlayerCard from './components/PlayerCard';
 import ScoreButtonGrid from './components/score-buttons/ScoreButtonGrid';
+import ContextTestPrints from "./components/ContextTestPrints";
 
 function App() {
 
@@ -198,6 +199,8 @@ function App() {
             className="startGameButton"
             >Start game</button>
           </div>
+          <ScoreButtonGrid />
+          <ContextTestPrints />
         </div>
       </div>
     );

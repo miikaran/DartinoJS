@@ -6,7 +6,6 @@ export const GameDataContext = createContext(undefined);
 
 const GameDataProvider = ({ children }) => {
 
-    const [points, setPoints] = useState({});
     const [players, setPlayers] = useState([]);
     const [gameMode, setGameMode] = useState()
     const [turn, setTurn] = useState();
@@ -15,15 +14,38 @@ const GameDataProvider = ({ children }) => {
     const [legsToWin, setLegsToWin] = useState()
     const [gameOn, setGameOn] = useState(false)
 
+
+    /**
+     * Updates a specific type of point for a player identified by their username.
+     *
+     * @param {string} playerUserName - Username of the player whose points should be updated.
+     * @param {string} typeOfPoint - Type of point that needs to be updated.
+     * @param {number} updatedValue - New value to assign to the specified type of point.
+     */
+    const updatePlayerPoints = (playerUserName, typeOfPoint, updatedValue) => {
+        const updatePoints = player => ({
+            ...player,
+            points: {...player.points,  [typeOfPoint]: updatedValue}
+        });
+
+        setPlayers(prevPlayers =>
+            prevPlayers.map(player =>
+                player.userName === playerUserName
+                    ? updatePoints(player)
+                    : player
+            )
+        );
+    };
+
     const availableToSubscribedContextComponents = { 
-        points, setPoints,
         players, setPlayers,
         gameMode, setGameMode,
         turn, setTurn,
         currentLeg, setCurrentLeg,
         legsToPlay, setLegsToPlay,
         legsToWin, setLegsToWin,
-        gameOn, setGameOn
+        gameOn, setGameOn,
+        updatePlayerPoints,
     };
 
     return (
