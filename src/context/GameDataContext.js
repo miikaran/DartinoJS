@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, {createContext, useEffect, useState} from 'react';
 
 export const GameDataContext = createContext(undefined);
 
@@ -53,7 +53,26 @@ const GameDataProvider = ({ children }) => {
         );
     };
 
-    const availableToSubscribedContextComponents = { 
+    // To clear the fields
+    // This should have a timer for like 2 secs
+    // and then show something to the users that next round is starting
+    useEffect(() => {
+        const areAllTurnsComplete = () => {
+            return players.every((p) => {
+                const { firstThrow, secondThrow, thirdThrow } = p.points;
+                return firstThrow !== 0 && secondThrow !== 0 && thirdThrow !== 0;
+            });
+        };
+
+        if (areAllTurnsComplete()) {
+            setPlayers((prevPlayers) => prevPlayers.map((p) => ({
+                ...p,
+                points: { firstThrow: 0, secondThrow: 0, thirdThrow: 0 }
+            })));
+        }
+    }, [players, setPlayers]);
+
+    const availableToSubscribedContextComponents = {
         players, setPlayers,
         gameMode, setGameMode,
         turn, setTurn,
