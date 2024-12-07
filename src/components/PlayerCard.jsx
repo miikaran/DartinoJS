@@ -1,6 +1,10 @@
 import "./PlayerCard.css"
+import { GameDataContext } from "../context/GameDataContext"
+import { useContext } from "react"
 
-const PlayerCard = ({player, setPlayerData}) => {
+const PlayerCard = ({player}) => {
+
+    const {points, setPlayerData} = useContext(GameDataContext)
 
     const updatePlayerPoints = (e) => {
         const pointToEdit = e.target.id
@@ -18,7 +22,7 @@ const PlayerCard = ({player, setPlayerData}) => {
         return turns.map((turn, index) => {
             return (
                 <div className="pointBox">
-                    <p className="point">{player[turn]}</p>
+                    <span className="point">{player["points"][turn]}</span>
                     <input 
                         key={index}
                         id={turns[index]}
@@ -34,7 +38,7 @@ const PlayerCard = ({player, setPlayerData}) => {
         <div className="playerCard">
             <span className="userName">🧑 {player.userName}</span>
             <div className="playerPoints">
-                <PointBox turns={["first", "second", "third"]} />
+                <PointBox turns={["firstThrow", "secondThrow", "thirdThrow"]} />
                 <span className="pointSigns">=</span>
                 <PointBox turns={["turnPoints"]} />
                 <span className="pointSigns">→</span>
