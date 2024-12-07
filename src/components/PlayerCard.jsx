@@ -22,8 +22,8 @@ const PlayerCard = ({player}) => {
         return turns.map((turn, index) => {
             return (
                 <div className="pointBox">
-                    <span className="point">{player["points"][turn]}</span>
                     <input 
+                        value={player["points"][turn]}
                         key={index}
                         id={turns[index]}
                         className="pointInput" 
