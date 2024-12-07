@@ -1,5 +1,5 @@
 import './App.css';
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef } from 'react';
 import { GameDataContext } from './context/GameDataContext';
 import PlayerCard from './components/PlayerCard';
 import ScoreButtonGrid from './components/score-buttons/ScoreButtonGrid';
@@ -38,6 +38,7 @@ function App() {
   const [roundCompleted, setRoundCompleted] = useState(false)
   const [invalidPlayerError, setInvalidPlayerError] = useState()
   const [invalidGameSettings, setInvalidGameSettings] = useState([])
+  const playerInputRef = useRef()
 
 
   const handleLegsToPlay = (e) => {
@@ -52,6 +53,11 @@ function App() {
     setNewPlayerInput(e.target.value)
   }
 
+  const emptyInputOnSubmit = () => {
+    playerInputRef.current.value = "";
+    playerInputRef.current.focus();
+  }
+
   const addPlayer = () => {
     if(players.length >= playerLimit){
       setInvalidPlayerError("Player limit reached!")
@@ -64,7 +70,9 @@ function App() {
         "userName": newPlayerInput
       })
       setPlayers(currentPlayers)
+      emptyInputOnSubmit()
     }
+
   }
 
   const generateLegOptions = () => {
@@ -132,9 +140,9 @@ function App() {
   }
 
   const generatePlayerCards = () => {
-    return players.map((player) => {
+    return players.map((player, index) => {
       return <PlayerCard 
-      key={player}
+      key={index}
       player={player} />
     })
   }
@@ -190,6 +198,7 @@ function App() {
             <label>Add players</label>
             <div>
               <input 
+                ref={playerInputRef}
                 onChange={(e) => handleNewPlayerInput(e)} 
                 placeholder="user name" 
               />
@@ -210,7 +219,6 @@ function App() {
             >Start game</button>
           </div>
           <ScoreButtonGrid />
-          <ContextTestPrints />
         </div>
       </div>
     );
