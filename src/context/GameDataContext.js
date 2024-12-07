@@ -9,7 +9,8 @@ const GameDataProvider = ({ children }) => {
     const [players, setPlayers] = useState([]);
     const [gameMode, setGameMode] = useState()
     const [turn, setTurn] = useState();
-    const [currentLeg, setCurrentLeg] = useState()
+    const [currentLeg, setCurrentLeg] = useState(1) 
+    const [currentRound, setCurrentRound] = useState(1)
     const [legsToPlay, setLegsToPlay] = useState();
     const [legsToWin, setLegsToWin] = useState()
     const [gameOn, setGameOn] = useState(false)
@@ -21,7 +22,11 @@ const GameDataProvider = ({ children }) => {
             points.firstThrow !== 0 && points.secondThrow !== 0 && points.thirdThrow !== 0;
 
         const updatePoints = (player) => {
-            const updatedPoints = { ...player.points, [pointType]: newValue };
+            const updatedPoints = { 
+                ...player.points, 
+                [pointType]: newValue,
+                
+            };
             if (areAllThrowsComplete(updatedPoints)) moveToNextTurn(usernameOfThePlayer);
             return {...player, points: updatedPoints};
         };
@@ -63,8 +68,9 @@ const GameDataProvider = ({ children }) => {
                 return firstThrow !== 0 && secondThrow !== 0 && thirdThrow !== 0;
             });
         };
-
-        if (areAllTurnsComplete()) {
+        // Infinite loop if not checking this
+        const hasPlayers = players.length > 0;
+        if (hasPlayers && areAllTurnsComplete()) {
             setPlayers((prevPlayers) => prevPlayers.map((p) => ({
                 ...p,
                 points: { firstThrow: 0, secondThrow: 0, thirdThrow: 0 }
@@ -77,6 +83,7 @@ const GameDataProvider = ({ children }) => {
         gameMode, setGameMode,
         turn, setTurn,
         currentLeg, setCurrentLeg,
+        currentRound, setCurrentRound,
         legsToPlay, setLegsToPlay,
         legsToWin, setLegsToWin,
         gameOn, setGameOn,
