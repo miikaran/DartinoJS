@@ -62,8 +62,13 @@ const ScoreButtonHandlerComponent = ({ children }) => {
             const updatedFirstAvailableThrowKey = findNextEmptyThrow(player.points);
 
             if (updatedFirstAvailableThrowKey) {
-                const updatedTurnPoints = player.points.turnPoints + points;
-                const updatedTotalPoints = player.points.totalPoints + points;
+                // added to fix those NaN issues
+                const turnPoints = player.points.turnPoints || 0;
+                const totalPoints = player.points.totalPoints || 0;
+
+                const updatedTurnPoints = turnPoints + points;
+                const updatedTotalPoints = totalPoints + points;
+
                 updatePlayerPoints(player.userName, updatedFirstAvailableThrowKey, points);
                 updatePlayerPoints(player.userName, "turnPoints", updatedTurnPoints);
                 updatePlayerPoints(player.userName, "totalPoints", updatedTotalPoints);
