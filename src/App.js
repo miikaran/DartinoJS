@@ -2,6 +2,7 @@ import './App.css';
 import { useState, useContext } from 'react';
 import { GameDataContext } from './context/GameDataContext';
 import PlayerCard from './components/PlayerCard';
+import ScoreButtonGrid from './components/score-buttons/ScoreButtonGrid';
 
 function App() {
 
@@ -11,9 +12,14 @@ function App() {
   const legsLimit = 5;
   const playerDataSchema = {
     "userName": null,
-    "legPoints": 0,
-    "totalPoints": 0,
     "wonGames": 0,
+    "points": {
+      "turnPoints": 0,
+      "totalPoints": 0,
+      "firstThrow": 0,
+      "secondThrow": 0,
+      "thirdThrow": 0
+    }
   }
 
   const {
@@ -101,7 +107,7 @@ function App() {
     if(players.length == 0){
       invalidMessages["players"] = `Add minimum ${minPlayers} to play`
     } 
-    if(invalidMessages){
+    if(Object.keys(invalidMessages).length > 0){
       setInvalidGameSettings(invalidMessages)
       return false;
     }
@@ -111,7 +117,8 @@ function App() {
   const startGame = () => {
     const isValid = validGameSettings()
     if(isValid){
-      console.log("peli alkaa")
+      setGameOn(true)
+      setTurn(players[0].userName)
     }
   }
 
@@ -120,11 +127,30 @@ function App() {
       const message = invalidGameSettings[type]
       return <p className="error">{message}</p>
     }
-
   }
 
-  return (
-      <div className="gameContainer">
+  const generatePlayerCards = () => {
+    return players.map((player) => {
+      return <PlayerCard 
+      key={player}
+      player={player} />
+    })
+  }
+
+  if(gameOn){
+    return(
+      <div className='gameContainer'>
+        <div className='playerCards'>
+          {generatePlayerCards()}
+        </div>
+        <ScoreButtonGrid />
+      </div>
+    )
+  }
+
+  if(!gameOn){
+    return (
+      <div className="gameMenuContainer">
         <div className="gameSettings">
           <div 
           uniquetype="mode"
@@ -174,7 +200,8 @@ function App() {
           </div>
         </div>
       </div>
-  );
+    );
+  }
 }
 
 export default App;

@@ -1,14 +1,14 @@
-.App {
+.gameMenuContainer{
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
 }
 
 .gameContainer{
+  background-color: rgb(6, 31, 41);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 .gameSettings{
@@ -22,4 +22,10 @@
 .error{
   color: red;
   font-size: 0.5em;
+}
+
+.playerCards{
+  width: 30%;
+  display: flex;
+  flex-direction: column;
 }
