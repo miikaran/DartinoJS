@@ -14,10 +14,12 @@ const GameDataProvider = ({ children }) => {
     const [legsToPlay, setLegsToPlay] = useState();
     const [legsToWin, setLegsToWin] = useState()
     const [gameOn, setGameOn] = useState(false)
+    const [history, setHistory] = useState({})
 
     // This is a monster and will refactor later and move it
     /* responsible for updating the points */
     const updatePlayerPoints = (usernameOfThePlayer, pointType, newValue) => {
+
         const areAllThrowsComplete = (points) =>
             points.firstThrow !== 0 && points.secondThrow !== 0 && points.thirdThrow !== 0;
 
@@ -27,7 +29,9 @@ const GameDataProvider = ({ children }) => {
                 [pointType]: newValue,
                 
             };
-            if (areAllThrowsComplete(updatedPoints)) moveToNextTurn(usernameOfThePlayer);
+            if (areAllThrowsComplete(updatedPoints)) {
+                moveToNextTurn(usernameOfThePlayer);
+            }
             return {...player, points: updatedPoints};
         };
 
@@ -70,6 +74,37 @@ const GameDataProvider = ({ children }) => {
         
     }
 
+    const getPlayerPoints = (usernameOfThePlayer) => {
+        let points;
+        for (const player of players){
+            if(player.userName == usernameOfThePlayer){
+                points = player.points
+            }
+        }
+        return points
+    }
+
+    const addPointsToHistory = () => {
+        const updatedHistory = {...history}
+        players.forEach((p) => {
+            const user = p.userName;
+            const points = getPlayerPoints(user)
+            if(!(user in updatedHistory)){
+                updatedHistory[user] = []
+            }
+            updatedHistory[user].push({
+                "leg": currentLeg,
+                "round": currentRound,
+                "first": points.firstThrow,
+                "second": points.secondThrow,
+                "third": points.thirdThrow,
+                "total": points.turnPoints
+            })
+        })
+        setHistory(updatedHistory)
+    }
+
+
     // To clear the fields
     // This should have a timer for like 2 secs
     // and then show something to the users that next round is starting
@@ -83,6 +118,7 @@ const GameDataProvider = ({ children }) => {
         // Infinite loop if not checking this
         const hasPlayers = players.length > 0;
         if (hasPlayers && areAllTurnsComplete()) {
+            addPointsToHistory()
             setPlayers((prevPlayers) => prevPlayers.map((p) => ({
                 ...p,
                 points: { 
@@ -106,6 +142,7 @@ const GameDataProvider = ({ children }) => {
         legsToWin, setLegsToWin,
         gameOn, setGameOn,
         updatePlayerPoints,
+        history, setHistory
     };
 
     return (
