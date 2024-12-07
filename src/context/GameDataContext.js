@@ -7,7 +7,7 @@ export const GameDataContext = createContext(undefined);
 const GameDataProvider = ({ children }) => {
 
     const [players, setPlayers] = useState([]);
-    const [gameMode, setGameMode] = useState()
+    const [gameMode, setGameMode] = useState("501")
     const [turn, setTurn] = useState();
     const [currentLeg, setCurrentLeg] = useState(1) 
     const [currentRound, setCurrentRound] = useState(1)
@@ -58,6 +58,18 @@ const GameDataProvider = ({ children }) => {
         );
     };
 
+    const getPlayerTotalPoints = (userName) => {
+        let totalPoints;
+        players.forEach((player) => {
+            if(player.userName === userName){
+                totalPoints = player.points.totalPoints
+                return;
+            }
+        })
+        return totalPoints
+        
+    }
+
     // To clear the fields
     // This should have a timer for like 2 secs
     // and then show something to the users that next round is starting
@@ -73,8 +85,14 @@ const GameDataProvider = ({ children }) => {
         if (hasPlayers && areAllTurnsComplete()) {
             setPlayers((prevPlayers) => prevPlayers.map((p) => ({
                 ...p,
-                points: { firstThrow: 0, secondThrow: 0, thirdThrow: 0 }
+                points: { 
+                    firstThrow: 0, 
+                    secondThrow: 0, 
+                    thirdThrow: 0,
+                    turnPoints: 0,
+                    totalPoints: getPlayerTotalPoints(p.userName) }
             })));
+            setCurrentRound(currentRound+1)
         }
     }, [players, setPlayers]);
 
