@@ -67,7 +67,7 @@ const ScoreButtonHandlerComponent = ({ children }) => {
                 const totalPoints = player.points.totalPoints || 0;
 
                 const updatedTurnPoints = turnPoints + points;
-                const updatedTotalPoints = totalPoints + points;
+                const updatedTotalPoints = totalPoints - points;
 
                 updatePlayerPoints(player.userName, updatedFirstAvailableThrowKey, points);
                 updatePlayerPoints(player.userName, "turnPoints", updatedTurnPoints);

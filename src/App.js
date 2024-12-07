@@ -11,18 +11,6 @@ function App() {
   const minPlayers = 1;
   const playerLimit = 2;
   const legsLimit = 5;
-  const playerDataSchema = {
-    "userName": null,
-    "wonGames": 0,
-    "points": {
-      "turnPoints": 0,
-      "totalPoints": 0,
-      "firstThrow": 0,
-      "secondThrow": 0,
-      "thirdThrow": 0
-    }
-  }
-
   const {
       players, setPlayers,
       gameMode, setGameMode,
@@ -33,6 +21,18 @@ function App() {
       legsToWin, setLegsToWin,
       gameOn, setGameOn
   } = useContext(GameDataContext) 
+
+  const playerDataSchema = {
+    "userName": null,
+    "wonGames": 0,
+    "points": {
+      "turnPoints": 0,
+      "totalPoints": gameMode || 501,
+      "firstThrow": 0,
+      "secondThrow": 0,
+      "thirdThrow": 0
+    }
+  }
 
   const [newPlayerInput, setNewPlayerInput] = useState()
   const [roundCompleted, setRoundCompleted] = useState(false)
@@ -67,7 +67,7 @@ function App() {
       let currentPlayers = [...players];
       currentPlayers.push({
         ...playerDataSchema,
-        "userName": newPlayerInput
+        userName: newPlayerInput,
       })
       setPlayers(currentPlayers)
       emptyInputOnSubmit()
