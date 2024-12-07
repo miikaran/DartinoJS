@@ -27,31 +27,32 @@ function App() {
       players, setPlayers,
       gameMode, setGameMode,
       turn, setTurn,
+      currentLeg, setCurrentLeg,
+      currentRound, setCurrentRound, 
       legsToPlay, setLegsToPlay,
       legsToWin, setLegsToWin,
       gameOn, setGameOn
   } = useContext(GameDataContext) 
 
-  const [invalidPlayerError, setInvalidPlayerError] = useState()
   const [newPlayerInput, setNewPlayerInput] = useState()
+  const [roundCompleted, setRoundCompleted] = useState(false)
+  const [invalidPlayerError, setInvalidPlayerError] = useState()
   const [invalidGameSettings, setInvalidGameSettings] = useState([])
 
+
   const handleLegsToPlay = (e) => {
-    const value = e.target.value;
-    setLegsToPlay(value)
+    setLegsToPlay(e.target.value)
   }
 
   const handleGameMode = (e) => {
-    const value = e.target.value;
-    setGameMode(value)
+    setGameMode(e.target.value)
   }
 
   const handleNewPlayerInput = (e) => {
-    const newPlayer = e.target.value;
-    setNewPlayerInput(newPlayer)
+    setNewPlayerInput(e.target.value)
   }
 
-  const addPlayer = (e) => {
+  const addPlayer = () => {
     if(players.length >= playerLimit){
       setInvalidPlayerError("Player limit reached!")
       return;
@@ -141,10 +142,19 @@ function App() {
   if(gameOn){
     return(
       <div className='gameContainer'>
-        <div className='playerCards'>
-          {generatePlayerCards()}
+        <div className='flexWrapper'>
+          <div className='gameInfo'>
+            <div className='gameStatus'>
+              <span>Leg: {currentLeg}</span>
+              <span>Turn: {turn}</span>
+              <span>Round: {currentRound}</span>
+            </div>
+            <div className='playerCards'>
+              {generatePlayerCards()}
+            </div>
+          </div>
+          <ScoreButtonGrid />
         </div>
-        <ScoreButtonGrid />
       </div>
     )
   }

@@ -5,14 +5,20 @@
 }
 
 .gameContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: rgb(6, 31, 41);
+}
+
+.flexWrapper{
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .gameSettings{
-  width: 50%;
+  width: 40%;
   font-size: 1.5em;
   background-color: rgb(7, 31, 54);
   color: white;
@@ -25,7 +31,25 @@
 }
 
 .playerCards{
-  width: 30%;
   display: flex;
   flex-direction: column;
 }
+
+.gameInfo{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+.gameStatus{
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  background-color: rgb(2, 15, 24);
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+
