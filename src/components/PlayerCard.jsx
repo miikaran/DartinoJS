@@ -68,7 +68,7 @@ const HistoryModal = ({userName, setHistoryModal}) => {
     const updateRemainingHistoryTotalPoints = (historyIndex, previousValue, newValue) => {
         let accumulatedTotalPoints = 0;
         const updatedHistory = history[userName].map((record, index) => {
-            if (index > historyIndex) {
+            if (index >= historyIndex) {
                 accumulatedTotalPoints = record.totalPoints + (previousValue - newValue)
                 return {
                     ...record, 
