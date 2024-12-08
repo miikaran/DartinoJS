@@ -215,21 +215,23 @@ const PlayerCard = ({player}) => {
         updatePlayerPoints(player.userName, pointToEdit, newValue)
     }
 
-    const PointBox = ({turns}) => {
-        return turns.map((turn, index) => (
-            <div 
-            className="pointBox" 
-            key={turn}>
-                <input
-                    maxLength={maxPointLength}
-                    defaultValue={player["points"][turn]}
-                    id={turn}
-                    className="pointInput"
-                    onBlur={handlePointChangeOnBlur}
-                    onChange={handlePointChange}
-                />
-            </div>
-        ));
+    const PointBox = ({ turns }) => {
+        return turns.map((turn) => {
+            const isReadonlyBoxes = turn === "turnPoints" || turn === "totalPoints";
+            return (
+                <div className="pointBox" key={turn}>
+                    <input
+                        maxLength={maxPointLength}
+                        defaultValue={player["points"][turn]}
+                        id={turn}
+                        className="pointInput"
+                        onChange={handlePointChange}
+                        readOnly={isReadonlyBoxes}
+                        onBlur={!isReadonlyBoxes ? handlePointChangeOnBlur : undefined}
+                    />
+                </div>
+            );
+        });
     }
 
     return(
