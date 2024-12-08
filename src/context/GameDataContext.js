@@ -16,7 +16,20 @@ const GameDataProvider = ({children}) => {
     const areAllThrowsComplete = (points) =>
         points.firstThrow !== 0 && points.secondThrow !== 0 && points.thirdThrow !== 0;
 
+    /**
+     * @function updatePlayerPoints
+     * @description Updates the points for a player's current turn based on the specified point type and value.
+     * @param {string} usernameOfThePlayer - Username of the player whose points are being updated.
+     * @param {string} pointType - Type of point being updated, for example: firstThrow.
+     * @param {number} newValue - New point value to be set for the specified point type.
+     */
     const updatePlayerPoints = (usernameOfThePlayer, pointType, newValue) => {
+        /**
+         * @function updatePlayerPoints
+         * @description Updates a player's points based on the latest throws.
+         * @param {Object} player - Player object whose points are to be updated.
+         * @returns {Object} - New player object with updated points.
+         */
         const updatePoints = (player) => {
             const existingPoints = player.points;
             const updatedPoints = {...existingPoints, [pointType]: newValue};
@@ -37,6 +50,11 @@ const GameDataProvider = ({children}) => {
             return {...player, points: updatedPoints};
         };
 
+        /**
+         * @function moveToNextTurn
+         * @description Moves the game to the next player's turn by updating the current turn state.
+         * @param {string} currentNameOfThePlayer - The username of the player who has the current turn.
+         */
         const moveToNextTurn = (currentNameOfThePlayer) => {
             setPlayers((prevPlayers) => {
                 const currentPlayerIndex = prevPlayers.findIndex(
@@ -70,6 +88,12 @@ const GameDataProvider = ({children}) => {
 
         const areAllTurnsComplete = () => players.every((p) => areAllThrowsComplete(p.points));
 
+        /**
+         * @function addPointsToHistory
+         * @description Updates the player's score history by adding the points
+         * collected in the current leg and round to a record for each player. If a player
+         * does not have an existing history, a new entry is created.
+         */
         const addPointsToHistory = () => {
             const updatedHistory = {...history}
             players.forEach((p) => {
@@ -90,6 +114,10 @@ const GameDataProvider = ({children}) => {
             setHistory(updatedHistory)
         }
 
+        /**
+         * @function initializeThrowsForNewRound
+         * @description Initializes the throw scores for players at the beginning of a new round.
+         */
         const initializeThrowsForNewRound = () => {
             setPlayers((prevPlayers) =>
                 prevPlayers.map((p) => {
