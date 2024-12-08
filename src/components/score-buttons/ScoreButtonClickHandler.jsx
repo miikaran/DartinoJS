@@ -15,7 +15,7 @@ const ScoreButtonHandlerComponent = ({ children }) => {
 
         const numberedValue = getNumberedButtonValue(pressedButton);
 
-        if (specialValue) {
+        if (specialValue != null && numberedValue !== 0) {
             handleCombinedValue(specialValue, numberedValue);
             return;
         }
@@ -24,8 +24,15 @@ const ScoreButtonHandlerComponent = ({ children }) => {
         updateScores(numberedValue); // Update points directly based on the button click
     };
 
+    const handleUndoButton = (previousSpecialValue) => {
+        specialValue = null
+        console.log(`${previousSpecialValue} has been undone.`);
+    }
+
     const handleSpecialButton = (button) => {
+        const previousSpecialValue = specialValue;
         specialValue = button.charAt(0).toUpperCase();
+        if (specialValue === "U") handleUndoButton(previousSpecialValue);
     };
 
     const handleCombinedValue = (special, numbered) => {
@@ -43,16 +50,10 @@ const ScoreButtonHandlerComponent = ({ children }) => {
 
     const calculatePoints = (special, numbered) => {
         switch (special) {
-            case 'D':
-                return numbered * 2;
-            case 'T':
-                return numbered * 3;
-            case 'O':
-                return 0;
-            case 'U':
-                return 0; // Consider adding functionality to "undo" the last score if this is desired
-            default:
-                throw new Error(`Unrecognized special value: ${special}.`);
+            case 'D': return numbered * 2;
+            case 'T': return numbered * 3;
+            case 'O': return 0; // Out should not be here
+            default: throw new Error(`Unrecognized special value: ${special}.`);
         }
     };
 
@@ -62,7 +63,6 @@ const ScoreButtonHandlerComponent = ({ children }) => {
             const updatedFirstAvailableThrowKey = findNextEmptyThrow(player.points);
 
             if (updatedFirstAvailableThrowKey) {
-                // added to fix those NaN issues
                 const turnPoints = player.points.turnPoints || 0;
                 const totalPoints = player.points.totalPoints || 0;
 
@@ -76,7 +76,6 @@ const ScoreButtonHandlerComponent = ({ children }) => {
         }
     };
 
-    /* Used to find the empty throw field  */
     const findNextEmptyThrow = (points) => {
         if (!points.firstThrow) return "firstThrow";
         if (!points.secondThrow) return "secondThrow";
