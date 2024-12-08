@@ -1,11 +1,12 @@
-import React, { useContext } from 'react';
-import { GameDataContext } from '../../context/GameDataContext';
+import React, {useContext} from 'react';
+import {GameDataContext} from '../../context/GameDataContext';
 
-const ScoreButtonHandlerComponent = ({ children }) => {
-    const { updatePlayerPoints, players, turn } = useContext(GameDataContext);
+const ScoreButtonHandlerComponent = ({children}) => {
+    const {updatePlayerPoints, players, turn} = useContext(GameDataContext);
 
     let specialValue = null;
-    let chosenValue = "";
+    let numberedValue = 0;
+    let combinedSpecialAndNumberedValue = "";
 
     const handleClick = (pressedButton, buttonIsSpecial = false) => {
         if (buttonIsSpecial) {
@@ -13,14 +14,14 @@ const ScoreButtonHandlerComponent = ({ children }) => {
             return;
         }
 
-        const numberedValue = getNumberedButtonValue(pressedButton);
+        const selectedNumberedValue = getNumberedButtonValue(pressedButton);
 
-        if (specialValue != null && numberedValue !== 0) {
-            handleCombinedValue(specialValue, numberedValue);
+        if (specialValue != null && selectedNumberedValue !== 0) {
+            handleCombinedValue(specialValue, selectedNumberedValue);
             return;
         }
 
-        chosenValue = numberedValue;
+        numberedValue = selectedNumberedValue;
         updateScores(numberedValue); // Update points directly based on the button click
     };
 
@@ -36,7 +37,7 @@ const ScoreButtonHandlerComponent = ({ children }) => {
     };
 
     const handleCombinedValue = (special, numbered) => {
-        chosenValue = `${special}${numbered}`;
+        combinedSpecialAndNumberedValue = `${special}${numbered}`;
 
         const pointsReceived = calculatePoints(special, numbered);
         updateScores(pointsReceived);
@@ -45,15 +46,19 @@ const ScoreButtonHandlerComponent = ({ children }) => {
     };
 
     const getNumberedButtonValue = (numberedButtonID) => {
-        return parseInt(numberedButtonID) + 1;
+        return numberedButtonID + 1;
     };
 
     const calculatePoints = (special, numbered) => {
         switch (special) {
-            case 'D': return numbered * 2;
-            case 'T': return numbered * 3;
-            case 'O': return 0; // Out should not be here
-            default: throw new Error(`Unrecognized special value: ${special}.`);
+            case 'D':
+                return numbered * 2;
+            case 'T':
+                return numbered * 3;
+            case 'O':
+                return 0; // Out should not be here
+            default:
+                throw new Error(`Unrecognized special value: ${special}.`);
         }
     };
 
@@ -84,7 +89,7 @@ const ScoreButtonHandlerComponent = ({ children }) => {
     };
 
     return (
-        <div>{children({ onButtonClick: handleClick })}</div>
+        <div>{children({onButtonClick: handleClick})}</div>
     );
 };
 
