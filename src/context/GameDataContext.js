@@ -61,7 +61,7 @@ const GameDataProvider = ({ children }) => {
     };
 
     const getPlayerPoints = (usernameOfThePlayer) => {
-        return players.find((player) => player.userName = usernameOfThePlayer).points 
+        return players.find((player) => player.userName === usernameOfThePlayer).points;
     }
 
     const addPointsToHistory = () => {
