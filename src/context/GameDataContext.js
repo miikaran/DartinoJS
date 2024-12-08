@@ -1,8 +1,8 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, {createContext, useEffect, useState} from 'react';
 
 export const GameDataContext = createContext(undefined);
 
-const GameDataProvider = ({ children }) => {
+const GameDataProvider = ({children}) => {
     const [players, setPlayers] = useState([]);
     const [gameMode, setGameMode] = useState("501");
     const [turn, setTurn] = useState();
@@ -19,7 +19,7 @@ const GameDataProvider = ({ children }) => {
     const updatePlayerPoints = (usernameOfThePlayer, pointType, newValue) => {
         const updatePoints = (player) => {
             const existingPoints = player.points;
-            const updatedPoints = {...existingPoints, [pointType]: newValue };
+            const updatedPoints = {...existingPoints, [pointType]: newValue};
 
             // Calculate the total points for the current turn
             const newTurnPoints =
@@ -34,7 +34,7 @@ const GameDataProvider = ({ children }) => {
 
             console.log(`Updated Points for ${player["userName"]}:`, updatedPoints); // 4 dbg
             if (areAllThrowsComplete(updatedPoints)) moveToNextTurn(usernameOfThePlayer);
-            return { ...player, points: updatedPoints };
+            return {...player, points: updatedPoints};
         };
 
         const moveToNextTurn = (currentNameOfThePlayer) => {
@@ -60,38 +60,37 @@ const GameDataProvider = ({ children }) => {
         );
     };
 
-    const getPlayerPoints = (usernameOfThePlayer) => {
-        return players.find((player) => player.userName === usernameOfThePlayer).points;
-    }
-
-    const addPointsToHistory = () => {
-        const updatedHistory = {...history}
-        players.forEach((p) => {
-            const user = p.userName;
-            const points = getPlayerPoints(user)
-            if(!(user in updatedHistory)){
-                updatedHistory[user] = []
-            }
-            updatedHistory[user].push({
-                "leg": currentLeg,
-                "round": currentRound,
-                "first": points.firstThrow,
-                "second": points.secondThrow,
-                "third": points.thirdThrow,
-                "total": points.turnPoints
-            })
-        })
-        setHistory(updatedHistory)
-    }
-
     useEffect(() => {
+        const getPlayerPoints = (usernameOfThePlayer) => {
+            return players.find((player) => player.userName === usernameOfThePlayer).points;
+        }
+
         const getPlayerTotalPoints = (userName) =>
             players.find((player) => player.userName === userName)?.points.totalPoints || 0;
 
         const areAllTurnsComplete = () => players.every((p) => areAllThrowsComplete(p.points));
 
-        if (players.length > 0 && areAllTurnsComplete()) {
-            addPointsToHistory()
+        const addPointsToHistory = () => {
+            const updatedHistory = {...history}
+            players.forEach((p) => {
+                const user = p.userName;
+                const points = getPlayerPoints(user)
+                if (!(user in updatedHistory)) {
+                    updatedHistory[user] = []
+                }
+                updatedHistory[user].push({
+                    "leg": currentLeg,
+                    "round": currentRound,
+                    "first": points.firstThrow,
+                    "second": points.secondThrow,
+                    "third": points.thirdThrow,
+                    "total": points.turnPoints
+                })
+            })
+            setHistory(updatedHistory)
+        }
+
+        const initializeThrowsForNewRound = () => {
             setPlayers((prevPlayers) =>
                 prevPlayers.map((p) => {
                     const newPoints = {
@@ -102,12 +101,37 @@ const GameDataProvider = ({ children }) => {
                         totalPoints: getPlayerTotalPoints(p.userName),
                     };
                     console.log(`resets for -> ${p.userName}:`, newPoints);
-                    return { ...p, points: newPoints };
+                    return {...p, points: newPoints};
                 })
             );
-            setCurrentRound((prevRound) => prevRound + 1);
         }
-    }, [players]);
+
+        // Note -> There is no visual feedback. Maybe some UI for this.
+        /**
+         * A function that prepares the game for a new round after a specified wait time.
+         *
+         * Currently, it:
+         * 1. Adds points to the game's history.
+         * 2. Initializes elements for the new round.
+         * 3. Updates the current round.
+         */
+        const prepareForNewRound = () => {
+            const waitTime = 3000;
+            console.log(`Preparing for new round, wait ${waitTime / 1000} secs.`);
+            setTimeout(() => {
+                addPointsToHistory();
+                try {
+                    initializeThrowsForNewRound();
+                    setCurrentRound((prevRound) => prevRound + 1);
+                } catch (error) {
+                    console.log(`Error while preparing for new round: ${error.message}`);
+                }
+            }, waitTime);
+        }
+
+        const allPlayersHaveFinishedTheirThrows = players.length > 0 && areAllTurnsComplete()
+        if (allPlayersHaveFinishedTheirThrows) prepareForNewRound()
+    }, [currentLeg, currentRound, history, players]);
 
     const availableToSubscribedContextComponents = {
         players, setPlayers,
