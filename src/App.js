@@ -34,9 +34,9 @@ function App() {
     }
   }
 
-  const [newPlayerInput, setNewPlayerInput] = useState()
+  const [newPlayerInput, setNewPlayerInput] = useState("")
   const [roundCompleted, setRoundCompleted] = useState(false)
-  const [invalidPlayerError, setInvalidPlayerError] = useState()
+  const [invalidPlayerError, setInvalidPlayerError] = useState("")
   const [invalidGameSettings, setInvalidGameSettings] = useState([])
   const playerInputRef = useRef()
 
@@ -49,9 +49,53 @@ function App() {
     setGameMode(e.target.value)
   }
 
-  const handleNewPlayerInput = (e) => {
-    setNewPlayerInput(e.target.value)
-  }
+  const ERROR_PLAYER_EXISTS = "Player already exists";
+  const ERROR_EMPTY_USERNAME = "Player name cannot be empty";
+
+  const handleNewPlayerInput = (event) => {
+    const inputUsername = event.target.value;
+    const trimmedUsername = inputUsername.trim();
+
+    if (inputUsername === "") {
+      clearInputAndError();
+      return;
+    }
+
+    if (isDuplicateUsername(trimmedUsername)) {
+      setErrorAndClearInput(ERROR_PLAYER_EXISTS);
+      return;
+    }
+
+    if (isEmptyUsername(trimmedUsername)) {
+      setErrorAndClearInput(ERROR_EMPTY_USERNAME);
+      return;
+    }
+
+    setValidPlayerInput(trimmedUsername);
+  };
+
+  const clearInputAndError = () => {
+    setNewPlayerInput("");
+    setInvalidPlayerError("");
+  };
+
+  const setErrorAndClearInput = (errorMessage) => {
+    setInvalidPlayerError(errorMessage);
+    setNewPlayerInput("");
+  };
+
+  const setValidPlayerInput = (username) => {
+    setNewPlayerInput(username);
+    setInvalidPlayerError("");
+  };
+
+  const isDuplicateUsername = (username) => {
+    return players.some(player => player.userName === username);
+  };
+
+  const isEmptyUsername = (username) => {
+    return username === "";
+  };
 
   const emptyInputOnSubmit = () => {
     playerInputRef.current.value = "";
