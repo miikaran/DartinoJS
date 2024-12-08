@@ -105,10 +105,11 @@ const GameDataProvider = ({children}) => {
                 updatedHistory[user].push({
                     "leg": currentLeg,
                     "round": currentRound,
-                    "first": points.firstThrow,
-                    "second": points.secondThrow,
-                    "third": points.thirdThrow,
-                    "total": points.turnPoints
+                    "firstThrow": points.firstThrow,
+                    "secondThrow": points.secondThrow,
+                    "thirdThrow": points.thirdThrow,
+                    "turnTotal": points.turnPoints,
+                    "totalPoints": points.totalPoints 
                 })
             })
             setHistory(updatedHistory)
