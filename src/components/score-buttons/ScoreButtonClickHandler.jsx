@@ -78,9 +78,9 @@ const ScoreButtonHandlerComponent = ({ children }) => {
 
     /* Used to find the empty throw field  */
     const findNextEmptyThrow = (points) => {
-        if (points.firstThrow === 0) return "firstThrow";
-        if (points.secondThrow === 0) return "secondThrow";
-        if (points.thirdThrow === 0) return "thirdThrow";
+        if (!points.firstThrow) return "firstThrow";
+        if (!points.secondThrow) return "secondThrow";
+        if (!points.thirdThrow) return "thirdThrow";
         return null;
     };
 
