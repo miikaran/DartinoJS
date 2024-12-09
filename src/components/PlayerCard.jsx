@@ -1,6 +1,7 @@
 import "./PlayerCard.css"
 import { GameDataContext } from "../context/GameDataContext"
 import { useContext, useState, useRef, useEffect } from "react"
+import PointBox from "./PointBox";
 
 const HistoryModal = ({userName, setHistoryModal}) => {
     const historyInfoHeaders = ["leg", "round", "turnTotal", "totalPoints"]
@@ -204,40 +205,11 @@ const HistoryModal = ({userName, setHistoryModal}) => {
 }
 
 const PlayerCard = ({player}) => {
-    let pointBoxInput;
-    let maxPointLength = 2;
-
-    const { updatePlayerPoints, turn } = useContext(GameDataContext)
+    const { turn } = useContext(GameDataContext)
     const [historyModal, setHistoryModal] = useState(false)
 
     const isPlayerTurn = () => turn == player.userName
     const toggleHistoryModal = () => setHistoryModal(!historyModal)
-    const handlePointChange = (e) => pointBoxInput = e.target.value
-
-    const handlePointChangeOnBlur = (e) => {
-        const pointToEdit = e.target.id
-        const newValue = parseInt(pointBoxInput) || 0
-        updatePlayerPoints(player.userName, pointToEdit, newValue)
-    }
-
-    const PointBox = ({ turns }) => {
-        return turns.map((turn) => {
-            const isReadonlyBoxes = turn === "turnPoints" || turn === "totalPoints";
-            return (
-                <div className="pointBox" key={turn}>
-                    <input
-                        maxLength={maxPointLength}
-                        defaultValue={player["points"][turn]}
-                        id={turn}
-                        className="pointInput"
-                        onChange={handlePointChange}
-                        readOnly={isReadonlyBoxes}
-                        onBlur={!isReadonlyBoxes ? handlePointChangeOnBlur : undefined}
-                    />
-                </div>
-            );
-        });
-    }
 
     return(
         <div className={isPlayerTurn() ? "turnHighlight playerCard" : "playerCard"}>
@@ -253,11 +225,11 @@ const PlayerCard = ({player}) => {
                 <button onClick={toggleHistoryModal}>Edit history</button>
             </div>
             <div className="playerPoints">
-                <PointBox turns={["firstThrow", "secondThrow", "thirdThrow"]} />
+                <PointBox turns={["firstThrow", "secondThrow", "thirdThrow"]} player={player}/>
                 <span className="pointSigns">=</span>
-                <PointBox turns={["turnPoints"]} />
+                <PointBox turns={["turnPoints"]}  player={player}/>
                 <span className="pointSigns">→</span>
-                <PointBox turns={["totalPoints"]} />
+                <PointBox turns={["totalPoints"]}  player={player}/>
             </div>
         </div>
     )
