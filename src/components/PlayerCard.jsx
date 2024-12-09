@@ -26,10 +26,8 @@ const HistoryModal = ({userName, setHistoryModal}) => {
     }
 
     const handleHistoryRecordInput = (
-        event, 
-        historyIndex, 
-        historyRecord, 
-        key
+        event, historyIndex, 
+        historyRecord, key 
     ) => {
         if (!historyRecord) return;
         const previousValue = historyRecord[key];
@@ -38,7 +36,7 @@ const HistoryModal = ({userName, setHistoryModal}) => {
         Doing multiple same state updates in this function,
         so have to create a base for async reasons
         */
-        let userHistory = {
+        let updatedHistory = {
             ...history,
             [userName]: history[userName].map((record, index) =>
                 index === historyIndex
@@ -56,40 +54,30 @@ const HistoryModal = ({userName, setHistoryModal}) => {
         // If more than one history record -> Sync the remaining records
         if (history[userName].length > 1) {
             const [updatedTotalPoints, updatedUserHistory] = updateRemainingHistoryTotalPoints(
-                userHistory, historyIndex,
+                updatedHistory, historyIndex, 
                 previousValue, newValue
             )
-            userHistory = updatedUserHistory
+            updatedHistory[userName] = updatedUserHistory
             updatePlayerTotalPoints(
-                previousValue, 
-                key, 
-                newValue, 
-                historyRecord, 
-                updatedTotalPoints
+                previousValue, key, newValue, 
+                historyRecord, updatedTotalPoints
             );
         } else {
             updatePlayerTotalPoints(
-                previousValue, 
-                key, 
-                newValue, 
-                historyRecord
+                previousValue, key, 
+                newValue, historyRecord
             );
         }
-        setHistory({
-            ...history,
-            [userName]: userHistory
-        });
+        setHistory(updatedHistory);
     };
     
     const updateRemainingHistoryTotalPoints = (
-        history, 
-        historyIndex, 
-        previousValue, 
-        newValue
+        history, historyIndex, 
+        previousValue, newValue
     ) => {
         let accumulatedTotalPoints = 0;
         const updatedHistory = history[userName].map((record, index) => {
-            if (index > historyIndex) {
+            if (index >= historyIndex) {
                 accumulatedTotalPoints = record.totalPoints + (previousValue-newValue)
                 return {
                     ...record, 
@@ -102,11 +90,8 @@ const HistoryModal = ({userName, setHistoryModal}) => {
     };
     
     const updatePlayerTotalPoints = (
-        previousValue, 
-        key, 
-        newValue,
-        historyRecord, 
-        updatedTotalPoints = null
+        previousValue, key, newValue,
+        historyRecord, updatedTotalPoints = null
     ) => {
         setPlayers((prevPlayers) =>
             prevPlayers.map((player) => {
@@ -115,12 +100,8 @@ const HistoryModal = ({userName, setHistoryModal}) => {
                     updatedTotalPoints !== null
                     ? updatedTotalPoints
                     : calculateNewTotalPoints(
-                        previousValue,
-                        key,
-                        newValue,
-                        historyRecord,
-                        false,
-                        "totalPoints"
+                        previousValue,key,newValue,
+                        historyRecord,false,"totalPoints"
                     ).totalPoints
                 return {
                     ...player,
@@ -134,11 +115,8 @@ const HistoryModal = ({userName, setHistoryModal}) => {
     };
     
     const calculateNewTotalPoints = (
-        previousValue, 
-        key, 
-        newValue,
-        historyRecord, 
-        calculateAll = true, targetKey = ""
+        previousValue, key, newValue,
+        historyRecord, calculateAll = true, targetKey = ""
     ) => {
         const calculateTotalPoints = (totalKey) => {
             if (["firstThrow", "secondThrow", "thirdThrow"].includes(key)) {
