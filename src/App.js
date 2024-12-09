@@ -25,6 +25,7 @@ function App() {
   const playerDataSchema = {
     "userName": null,
     "wonGames": 0,
+    "legsWon": 0,
     "points": {
       "turnPoints": 0,
       "totalPoints": gameMode || 501,
