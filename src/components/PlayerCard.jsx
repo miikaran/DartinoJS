@@ -3,30 +3,19 @@ import { GameDataContext } from "../context/GameDataContext"
 import { useContext, useState, useRef, useEffect } from "react"
 
 const HistoryModal = ({userName, setHistoryModal}) => {
-
     const historyInfoHeaders = ["leg", "round", "turnTotal", "totalPoints"]
     const historyInputHeaders = ["Leg", "Round", "1st", "2nd", "3rd", "Turn total", "Total"]
     const {history, setHistory, setPlayers} = useContext(GameDataContext)
     const modalRef = useRef()
     const [userHistory, setUserHistory] = useState([])
 
-    // Listener for listening clicks outside modal. 
-    // Prolly should be in ref xd.
-    document.addEventListener("click", (e) => {
-        detectClickOutsideModal(e)
-    }, true)
-
-    useEffect(() => {
-        getAndSetUserHistory(userName)
-    }, [history])
+    // Listener for listening clicks outside modal. Prolly should be in ref.
+    document.addEventListener("click", (e) => detectClickOutsideModal(e), true)
+    useEffect(() => getAndSetUserHistory(userName), [history])
 
     const getAndSetUserHistory = () => {
-        for(const [user, data] of Object.entries(history)){
-            if(user == userName){
-                setUserHistory(data);
-                break;
-            }
-        }
+        const data = history[userName]
+        data && setUserHistory(data)
     }
 
     const detectClickOutsideModal = (e) => {
@@ -36,40 +25,72 @@ const HistoryModal = ({userName, setHistoryModal}) => {
         }
     }
 
-    const handleHistoryRecordInput = (event, historyIndex, historyRecord, key) => {
+    const handleHistoryRecordInput = (
+        event, 
+        historyIndex, 
+        historyRecord, 
+        key
+    ) => {
         if (!historyRecord) return;
         const previousValue = historyRecord[key];
         const newValue = parseInt(event.target.value) || previousValue || 0;
-        setHistory((prevHistory) => ({
-            ...prevHistory,
-            [userName]: prevHistory[userName].map((record, index) =>
+        /* 
+        Doing multiple same state updates in this function,
+        so have to create a base for async reasons
+        */
+        let userHistory = {
+            ...history,
+            [userName]: history[userName].map((record, index) =>
                 index === historyIndex
                 ? {
                     ...record,
                     [key]: newValue,
-                    ...calculateNewTotalPoints(previousValue, key, newValue, historyRecord),
+                    ...calculateNewTotalPoints(
+                        previousValue, key, 
+                        newValue, historyRecord
+                    ),
                     }
                 : record
-            ),
-        }));
-        if (history[userName].length > 1) {
-            const updatedTotalPoints = updateRemainingHistoryTotalPoints(
-                historyIndex, previousValue, newValue
-            );
-            updatePlayerTotalPoints(
-                previousValue, key, newValue, 
-                historyRecord, updatedTotalPoints
-            );
-            return;
+            )
         }
-        updatePlayerTotalPoints(previousValue, key, newValue, historyRecord);
+        // If more than one history record -> Sync the remaining records
+        if (history[userName].length > 1) {
+            const [updatedTotalPoints, updatedUserHistory] = updateRemainingHistoryTotalPoints(
+                userHistory, historyIndex,
+                previousValue, newValue
+            )
+            userHistory = updatedUserHistory
+            updatePlayerTotalPoints(
+                previousValue, 
+                key, 
+                newValue, 
+                historyRecord, 
+                updatedTotalPoints
+            );
+        } else {
+            updatePlayerTotalPoints(
+                previousValue, 
+                key, 
+                newValue, 
+                historyRecord
+            );
+        }
+        setHistory({
+            ...history,
+            [userName]: userHistory
+        });
     };
     
-    const updateRemainingHistoryTotalPoints = (historyIndex, previousValue, newValue) => {
+    const updateRemainingHistoryTotalPoints = (
+        history, 
+        historyIndex, 
+        previousValue, 
+        newValue
+    ) => {
         let accumulatedTotalPoints = 0;
         const updatedHistory = history[userName].map((record, index) => {
-            if (index >= historyIndex) {
-                accumulatedTotalPoints = record.totalPoints + (previousValue - newValue)
+            if (index > historyIndex) {
+                accumulatedTotalPoints = record.totalPoints + (previousValue-newValue)
                 return {
                     ...record, 
                     totalPoints: accumulatedTotalPoints
@@ -77,16 +98,15 @@ const HistoryModal = ({userName, setHistoryModal}) => {
             }
             return record;
         });
-        setHistory((prevHistory) => ({
-            ...prevHistory,
-            [userName]: updatedHistory,
-        }));
-        return accumulatedTotalPoints;
+        return [accumulatedTotalPoints, updatedHistory]
     };
     
     const updatePlayerTotalPoints = (
-        previousValue, key, newValue,
-        historyRecord, updatedTotalPoints = null
+        previousValue, 
+        key, 
+        newValue,
+        historyRecord, 
+        updatedTotalPoints = null
     ) => {
         setPlayers((prevPlayers) =>
             prevPlayers.map((player) => {
@@ -95,8 +115,12 @@ const HistoryModal = ({userName, setHistoryModal}) => {
                     updatedTotalPoints !== null
                     ? updatedTotalPoints
                     : calculateNewTotalPoints(
-                        previousValue,key,newValue,
-                        historyRecord,false,"totalPoints"
+                        previousValue,
+                        key,
+                        newValue,
+                        historyRecord,
+                        false,
+                        "totalPoints"
                     ).totalPoints
                 return {
                     ...player,
@@ -110,8 +134,11 @@ const HistoryModal = ({userName, setHistoryModal}) => {
     };
     
     const calculateNewTotalPoints = (
-        previousValue, key, newValue,
-        historyRecord, calculateAll = true, targetKey = ""
+        previousValue, 
+        key, 
+        newValue,
+        historyRecord, 
+        calculateAll = true, targetKey = ""
     ) => {
         const calculateTotalPoints = (totalKey) => {
             if (["firstThrow", "secondThrow", "thirdThrow"].includes(key)) {
