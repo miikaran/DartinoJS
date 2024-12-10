@@ -1,0 +1,37 @@
+.historyRecordInput{
+    font-size: 1em;
+    width: 8vw;
+    padding: 10px;
+    color: white;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.37);
+}
+
+.historyTableHeaders{
+    background-color: rgb(6, 23, 39);
+}
+
+.historyTableBody{
+    background-color: rgba(23, 59, 80, 0.226);
+}
+
+.historyHeader{
+    text-align: start;
+    font-size: 1.1em;
+    padding: 10px;
+}
+
+.historyInfoHeaders{
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.notCurrentLegHistoryInput{
+    width: 8vw;
+    padding: 10px;
+    border: none;
+    background-color: rgba(109, 106, 106, 0.205);
+    color: rgb(255, 255, 255);
+}
