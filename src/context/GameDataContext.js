@@ -10,12 +10,27 @@ const GameDataProvider = ({ children }) => {
     const [currentLeg, setCurrentLeg] = useState(1);
     const [currentRound, setCurrentRound] = useState(1);
     const [legsToPlay, setLegsToPlay] = useState();
-    const [legsToWin, setLegsToWin] = useState();
+    const [legsToWin, setLegsToWin] = useState(null);
     const [gameOn, setGameOn] = useState(false);
     const [history, setHistory] = useState({});
+    const [gameOver, setGameOver] = useState(false)
+    const playerDataSchema = {
+        "userName": null,
+        "wonGames": 0,
+        "legsWon": 0,
+        "points": {
+          "turnPoints": 0,
+          "totalPoints": gameMode || 501,
+          "firstThrow": 0,
+          "secondThrow": 0,
+          "thirdThrow": 0
+        }
+      }
 
     const areAllThrowsComplete = (points) =>
-        points.firstThrow !== 0 && points.secondThrow !== 0 && points.thirdThrow !== 0;
+        points.firstThrow !== 0 
+        && points.secondThrow !== 0 
+        && points.thirdThrow !== 0;
 
     const initializeThrowsForNewLeg = useCallback(() => {
         setCurrentRound(1);
@@ -39,51 +54,21 @@ const GameDataProvider = ({ children }) => {
         });
     }, [gameMode]);
 
-    const updateWonLegs = useCallback((player) => {
-        setPlayers((prevPlayers) =>
-            prevPlayers.map((p) =>
-                p.userName === player.userName ? { ...p, legsWon: (p.legsWon || 0) + 1 } : p
-            )
-        );
+    const updateWonGames = useCallback((player) => {
+        const updatedWonLegs = (player.legsWon || 0) + 1
+        const updatedWonGames = (player.gamesWon || 0) + 1
+        player.legsWon = updatedWonLegs;
+        player.wonGames = updatedWonGames
     }, []);
 
     const checkForWin = useCallback((player) => {
-        const amountOfPlayers = players.filter(p => p.userName === player.userName).length;
-        let requiredLegsToWin;
-        let legsWon;
-
-        /* This part is not working currently
-        *
-        * If there is 2 players and less than 3 rounds,
-        * then the winner is who finishes legsToPlay.
-        *
-        * If there is 2 player and more than 3 rounds,
-        * then winner is who has the majority
-        *
-        * With 1 player, it stays the same. Always has get the legsToPlay to win.
-        *
-        * */
-        if (legsToPlay > 2) {
-            if (amountOfPlayers === 2) {
-                legsWon = player.legsWon + 1;
-                requiredLegsToWin = Math.ceil(legsToPlay / 2);
-            } else {
-                legsWon = player.legsWon;
-                requiredLegsToWin = legsToPlay;
-            }
-        } else {
-            legsWon = player.legsWon;
-            requiredLegsToWin = legsToPlay;
-        }
-
-        console.log(`${player.userName} has won the majority of legs: ${legsWon}`);
-
-        if (legsWon >= requiredLegsToWin) {
-            console.log(`${player.userName} has won the majority of legs: ${legsWon}`);
+        if (player.legsWon >= legsToWin) {
+            console.log(`${player.userName} has won the majority of legs: ${player.legsWon}`);
             setWinner(player.userName);
             // If user selects to start game quickly (before timeout has completed)
             // then it will show the previous scores for a moment.
             // We need better reset game functionality.
+            setGameOver(true)
             setGameOn(false);
         } else {
             console.log(`Starting new leg for player: ${player.userName}`);
@@ -110,14 +95,16 @@ const GameDataProvider = ({ children }) => {
 
             if (zeroHasBeenReachedWithDoubleScore) {
                 console.log(`Zero reached with double score for ${player.userName}`);
-                updateWonLegs(player);
+                updateWonGames(player);
                 checkForWin(player);
             } else if (isPlayerBusted(updatedPoints)) {
                 updatedPoints.totalPoints = existingPoints.totalPoints;
                 console.log(`BUST - ${player.userName} remains with ${updatedPoints.totalPoints} points.`);
             }
 
-            if (areAllThrowsComplete(updatedPoints)) moveToNextTurn(usernameOfThePlayer);
+            if (areAllThrowsComplete(updatedPoints)) {
+                moveToNextTurn(usernameOfThePlayer);
+            }
             return { ...player, points: updatedPoints };
         };
 
@@ -142,7 +129,7 @@ const GameDataProvider = ({ children }) => {
                 return player;
             })
         );
-    }, [checkForWin, players, updateWonLegs]);
+    }, [checkForWin, players, updateWonGames]);
 
     const addPointsToHistory = useCallback(() => {
         const updatedHistory = { ...history };
@@ -180,10 +167,45 @@ const GameDataProvider = ({ children }) => {
         );
     }, []);
 
+
+    // PRO GAME DATA RESETTING v1
+    const playAgain = () => {
+        setPlayers((prevPlayers) => {
+            return prevPlayers.map((player) => {
+                console.log(player)
+                const schema = playerDataSchema
+                schema.userName = player.userName;
+                schema.wonGames = player.wonGames;
+                return schema
+            })
+        })
+        setGameOver(false)
+        setCurrentLeg(0)
+        setCurrentRound(0)
+        setTurn(players[0].userName)
+        setWinner(null)
+        setGameOn(true)
+    }
+
+    // PRO GAME DATA RESETTING v2
+    const resetGameData = () => {
+        setGameOver(false)
+        setHistory({})
+        setLegsToWin(null)
+        setLegsToPlay(null)
+        setCurrentLeg(0)
+        setCurrentRound(0)
+        setTurn(null)
+        setGameMode("501")
+        setPlayers([])
+        setWinner(null)
+        setGameOn(false)
+    }
+
     useEffect(() => {
         const areAllTurnsComplete = () => players.every(p => areAllThrowsComplete(p.points));
 
-        const waitTime = 3000;
+        const waitTime = 500;
 
         if (players.length > 0 && areAllTurnsComplete()) {
             console.log(`Preparing for new round, wait ${waitTime / 1000} secs.`);
@@ -208,7 +230,11 @@ const GameDataProvider = ({ children }) => {
         legsToWin, setLegsToWin,
         gameOn, setGameOn,
         updatePlayerPoints,
-        history, setHistory
+        history, setHistory,
+        playerDataSchema,
+        winner, setWinner,
+        gameOver, setGameOver,
+        resetGameData, playAgain
     };
 
     return (
