@@ -38,13 +38,9 @@ const ScoreButtonHandlerComponent = ({children}) => {
 
     const handleCombinedValue = (special, numbered) => {
         combinedSpecialAndNumberedValue = `${special}${numbered}`;
-
         const pointsReceived = calculatePoints(special, numbered);
-        if (special === "D") {
-            updateScores(pointsReceived, true);
-        } else {
-            updateScores(pointsReceived, false);
-        }
+        const isDoubleSpecial = special === "D";
+        updateScores(pointsReceived, isDoubleSpecial);
         specialValue = null;
     };
 
@@ -65,27 +61,24 @@ const ScoreButtonHandlerComponent = ({children}) => {
         }
     };
 
-    const updateScores = (points, doubleKey) => {
+    const updatePointsForPlayer = (player, firstAvailableThrowKey, points, isDoubleKey) => {
+        const userName = player.userName;
+        const turnPoints = player.points.turnPoints || 0;
+        const totalPoints = player.points.totalPoints || 0;
+
+        const updatedTurnPoints = turnPoints + points;
+        const updatedTotalPoints = totalPoints - points;
+        updatePlayerPoints(userName, firstAvailableThrowKey, points, isDoubleKey);
+        updatePlayerPoints(userName, "turnPoints", updatedTurnPoints);
+        updatePlayerPoints(userName, "totalPoints", updatedTotalPoints);
+    };
+
+    const updateScores = (points, isDoubleKey) => {
         const player = players.find(p => p.userName === turn);
         if (player) {
             const updatedFirstAvailableThrowKey = findNextEmptyThrow(player.points);
-
             if (updatedFirstAvailableThrowKey) {
-                const turnPoints = player.points.turnPoints || 0;
-                const totalPoints = player.points.totalPoints || 0;
-
-                const updatedTurnPoints = turnPoints + points;
-                const updatedTotalPoints = totalPoints - points;
-
-                if (doubleKey) {
-                    updatePlayerPoints(player.userName, updatedFirstAvailableThrowKey, points, true);
-                    updatePlayerPoints(player.userName, "turnPoints", updatedTurnPoints);
-                    updatePlayerPoints(player.userName, "totalPoints", updatedTotalPoints);
-                } else {
-                    updatePlayerPoints(player.userName, updatedFirstAvailableThrowKey, points, false);
-                    updatePlayerPoints(player.userName, "turnPoints", updatedTurnPoints);
-                    updatePlayerPoints(player.userName, "totalPoints", updatedTotalPoints);
-                }
+                updatePointsForPlayer(player, updatedFirstAvailableThrowKey, points, isDoubleKey);
             }
         }
     };
