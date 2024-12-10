@@ -15,10 +15,19 @@
 
 /* The actual numbered button */
 .numbered-button {
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 40px;
+    font-size: 1.4em;
+    font-weight: bold;
     width: 100%;
+    background-color: rgb(5, 35, 44);
+    border-radius: 3px;
+    border: none;
+    color: white;
     box-sizing: border-box;
+}
+
+.numbered-button:hover{
+    background-color:rgb(34, 102, 122);
 }
 
 /* This is to align the special buttons in a single row */
@@ -26,11 +35,17 @@
     display: flex;
     justify-content: center;
     margin-top: 20px;
+    gap: 2%;
 }
 
 /* The actual special button */
 .special-button {
-    padding: 10px 20px;
-    margin-left: 10px;
-    font-size: 16px;
+    font-size: 1.4em;
+    padding: 40px;
+    width: 100%;
+    background-color: rgb(15, 66, 82);
+    border-radius: 3px;
+    border: none;
+    color: white;
+    box-sizing: border-box;
 }

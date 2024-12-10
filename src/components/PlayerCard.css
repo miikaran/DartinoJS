@@ -1,24 +1,26 @@
 
 .playerCard{
-    background-color: rgb(11, 36, 59);
+    background-color: rgba(10, 37, 53, 0.842); 
     color: white;
     display: flex;
     padding: 10px;
     gap: 20px;
     flex-direction: column;
+    border-radius: 4px;
 }
 
 .pointBox{
     display: flex;
     align-items: center;
     flex-direction: column;
-    border: solid 1px #ccc;
-    background-color: rgba(5, 35, 53, 0.842);
+    background-color: rgba(4, 17, 26, 0.842);
     padding: 10px 0;
+    border-radius: 4px;
 }
 
 .playerPoints{
     display: flex;
+    gap: 10px;
 }
 
 .pointSigns{

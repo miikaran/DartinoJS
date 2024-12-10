@@ -211,17 +211,21 @@ function App() {
           && <GameOverModal setGameOverModal={setGameOver}  />
         }
         <div className='flexWrapper'>
-            <div className='gameInfo'>
+            <div className='gameStatusWrapper'>
               <div className='gameStatus'>
                 <span>Leg: {currentLeg}</span>
                 <span>Turn: {turn}</span>
                 <span>Round: {currentRound}</span>
               </div>
-              <div className='playerCards'>
-                {generatePlayerCards()}
-              </div>
             </div>
-            <ScoreButtonGrid />
+            <div className='gameInfoWrapper'>
+              <div className='gameInfo'>
+                <div className='playerCards'>
+                  {generatePlayerCards()}
+                </div>
+              </div>
+              <ScoreButtonGrid />
+            </div>
           </div>
       </div>
     )
