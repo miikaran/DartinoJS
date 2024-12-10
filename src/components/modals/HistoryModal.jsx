@@ -69,7 +69,7 @@ const HistoryModal = ({userName, setHistoryModal}) => {
     ) => {
         let accumulatedTotalPoints = 0;
         const updatedHistory = history[userName].map((record, index) => {
-            if (index >= historyIndex) {
+            if (index > historyIndex) {
                 accumulatedTotalPoints = record.totalPoints + (previousValue-newValue)
                 return {
                     ...record, 
@@ -185,14 +185,18 @@ const HistoryModal = ({userName, setHistoryModal}) => {
         <Modal 
         modalRef={modalRef}
         setModal={setHistoryModal}>
-            <div 
-                ref={modalRef} 
-                >
+            <div>
                 <table className="historyContainer">
                     <thead className="historyTableHeaders">{getHistoryTableHeaders()}</thead>
                     <tbody className="historyTableBody">{getUserHistoryList()}</tbody>
                 </table>
             </div>
+            <button 
+                className="close"
+                onClick={() => setHistoryModal(false)}
+                >
+                X
+            </button>
         </Modal>
     )
 }
