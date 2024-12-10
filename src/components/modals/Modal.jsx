@@ -16,12 +16,6 @@ const Modal = ({children, modalRef, setModal}) => {
     ref={modalRef}>
         <div className="modalContent">
             {children}
-            <button 
-            className="close"
-            onClick={() => setModal(false)}
-            >
-            X
-            </button>
         </div>
     </div>
 }
