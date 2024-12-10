@@ -40,8 +40,11 @@ const ScoreButtonHandlerComponent = ({children}) => {
         combinedSpecialAndNumberedValue = `${special}${numbered}`;
 
         const pointsReceived = calculatePoints(special, numbered);
-        updateScores(pointsReceived);
-
+        if (special === "D") {
+            updateScores(pointsReceived, true);
+        } else {
+            updateScores(pointsReceived, false);
+        }
         specialValue = null;
     };
 
@@ -62,7 +65,7 @@ const ScoreButtonHandlerComponent = ({children}) => {
         }
     };
 
-    const updateScores = (points) => {
+    const updateScores = (points, doubleKey) => {
         const player = players.find(p => p.userName === turn);
         if (player) {
             const updatedFirstAvailableThrowKey = findNextEmptyThrow(player.points);
@@ -74,9 +77,15 @@ const ScoreButtonHandlerComponent = ({children}) => {
                 const updatedTurnPoints = turnPoints + points;
                 const updatedTotalPoints = totalPoints - points;
 
-                updatePlayerPoints(player.userName, updatedFirstAvailableThrowKey, points);
-                updatePlayerPoints(player.userName, "turnPoints", updatedTurnPoints);
-                updatePlayerPoints(player.userName, "totalPoints", updatedTotalPoints);
+                if (doubleKey) {
+                    updatePlayerPoints(player.userName, updatedFirstAvailableThrowKey, points, true);
+                    updatePlayerPoints(player.userName, "turnPoints", updatedTurnPoints);
+                    updatePlayerPoints(player.userName, "totalPoints", updatedTotalPoints);
+                } else {
+                    updatePlayerPoints(player.userName, updatedFirstAvailableThrowKey, points, false);
+                    updatePlayerPoints(player.userName, "turnPoints", updatedTurnPoints);
+                    updatePlayerPoints(player.userName, "totalPoints", updatedTotalPoints);
+                }
             }
         }
     };
