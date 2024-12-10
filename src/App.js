@@ -3,7 +3,7 @@ import { useState, useContext, useRef } from 'react';
 import { GameDataContext } from './context/GameDataContext';
 import PlayerCard from './components/PlayerCard';
 import ScoreButtonGrid from './components/score-buttons/ScoreButtonGrid';
-import ContextTestPrints from "./components/ContextTestPrints";
+import GameOverModal from './components/modals/GameOverModal';
 
 function App() {
 
@@ -16,31 +16,19 @@ function App() {
       gameMode, setGameMode,
       turn, setTurn,
       currentLeg, setCurrentLeg,
-      currentRound, setCurrentRound, 
+      currentRound,
       legsToPlay, setLegsToPlay,
-      legsToWin, setLegsToWin,
-      gameOn, setGameOn
+      setLegsToWin,
+      gameOn, setGameOn,
+      playerDataSchema,
+      winner,
+      gameOver, setGameOver
   } = useContext(GameDataContext) 
 
-  const playerDataSchema = {
-    "userName": null,
-    "wonGames": 0,
-    "legsWon": 0,
-    "points": {
-      "turnPoints": 0,
-      "totalPoints": gameMode || 501,
-      "firstThrow": 0,
-      "secondThrow": 0,
-      "thirdThrow": 0
-    }
-  }
-
   const [newPlayerInput, setNewPlayerInput] = useState("")
-  const [roundCompleted, setRoundCompleted] = useState(false)
   const [invalidPlayerError, setInvalidPlayerError] = useState("")
   const [invalidGameSettings, setInvalidGameSettings] = useState([])
   const playerInputRef = useRef()
-
 
   const handleLegsToPlay = (e) => {
     setLegsToPlay(e.target.value)
@@ -56,22 +44,18 @@ function App() {
   const handleNewPlayerInput = (event) => {
     const inputUsername = event.target.value;
     const trimmedUsername = inputUsername.trim();
-
     if (inputUsername === "") {
       clearInputAndError();
       return;
     }
-
     if (isDuplicateUsername(trimmedUsername)) {
       setErrorAndClearInput(ERROR_PLAYER_EXISTS);
       return;
     }
-
     if (isEmptyUsername(trimmedUsername)) {
       setErrorAndClearInput(ERROR_EMPTY_USERNAME);
       return;
     }
-
     setValidPlayerInput(trimmedUsername);
   };
 
@@ -139,14 +123,29 @@ function App() {
     return options
   }
 
+  const removeAddedPlayer = (player) => {
+    const userName = player.userName
+    const isAdded = players.some((p) => p.userName === userName)
+    if(isAdded){
+      const removableIndex = players.findIndex(p => p.userName === userName)
+      const updatedPlayers = [...players]
+      updatedPlayers.splice(removableIndex, 1)
+      setPlayers(updatedPlayers)
+    }
+  }
+
   const getAddedPlayersComponents = () => {
     return players.map((player, index) => {
       const userName = player.userName
       return(
         <div 
           key={index} 
-          className='addedPlayer'
-        >{userName}</div>
+          className='addedPlayer'>
+          {userName}
+          <button 
+            onClick={() => removeAddedPlayer(player)}
+          >X</button>
+        </div>
       )
     })
   }
@@ -174,6 +173,7 @@ function App() {
     if(isValid){
       setGameOn(true)
       setTurn(players[0].userName)
+      countLegsToWin(legsToPlay)
     }
   }
 
@@ -192,80 +192,92 @@ function App() {
     })
   }
 
-  if(gameOn){
+  const countLegsToWin = (chosenLegAmount) => {
+    setLegsToWin(() => 
+      chosenLegAmount % 2 == 0 
+      ? (chosenLegAmount / 2) + 1
+      : Math.ceil(chosenLegAmount/2)
+  )
+
+}
+
+  if(gameOn || gameOver){
     return(
       <div className='gameContainer'>
+        {
+          winner && gameOver
+          && <GameOverModal setGameOverModal={setGameOver}  />
+        }
         <div className='flexWrapper'>
-          <div className='gameInfo'>
-            <div className='gameStatus'>
-              <span>Leg: {currentLeg}</span>
-              <span>Turn: {turn}</span>
-              <span>Round: {currentRound}</span>
+            <div className='gameInfo'>
+              <div className='gameStatus'>
+                <span>Leg: {currentLeg}</span>
+                <span>Turn: {turn}</span>
+                <span>Round: {currentRound}</span>
+              </div>
+              <div className='playerCards'>
+                {generatePlayerCards()}
+              </div>
             </div>
-            <div className='playerCards'>
-              {generatePlayerCards()}
-            </div>
+            <ScoreButtonGrid />
           </div>
-          <ScoreButtonGrid />
-        </div>
       </div>
     )
-  }
-
-  if(!gameOn){
+  } else {
     return (
-      <div className="gameMenuContainer">
-        <div className="gameSettings">
-          <div 
-          uniquetype="mode"
-          className='gameMode'>
-            {getSettingError("mode")}
-            <label>Game mode</label>
-            <select 
-              onChange={(e) => handleGameMode(e)}>
-              {generateGameModeOptions()}
-            </select>
-          </div>
-          <div 
-          className="legs">
-            {getSettingError("legs")}
-            <label>Legs</label>
-            <select 
-              uniquetype="legsToPlay"
-              onChange={(e) => handleLegsToPlay(e)}>
-              {generateLegOptions()}
-            </select>
-          </div>
-          <div 
-          uniquetype="players"
-          className="players">
-            {getSettingError("players")}
-            <label>Add players</label>
-            <div>
-              <input 
-                ref={playerInputRef}
-                onChange={(e) => handleNewPlayerInput(e)} 
-                placeholder="user name" 
-              />
-              <button onClick={addPlayer}>Add</button>
-              {
-                invalidPlayerError
-                && <p className="error">{invalidPlayerError}</p>
-              }
+      <>
+        <div className="gameMenuContainer">
+          <div className="gameSettings">
+            <div 
+            uniquetype="mode"
+            className='gameMode'>
+              {getSettingError("mode")}
+              <label>Game mode</label>
+              <select 
+                onChange={(e) => handleGameMode(e)}>
+                {generateGameModeOptions()}
+              </select>
             </div>
-            <div className="playerList">
-              {getAddedPlayersComponents()}
+            <div 
+            className="legs">
+              {getSettingError("legs")}
+              <label>Legs</label>
+              <select 
+                uniquetype="legsToPlay"
+                onChange={(e) => handleLegsToPlay(e)}>
+                {generateLegOptions()}
+              </select>
+            </div>
+            <div 
+            uniquetype="players"
+            className="players">
+              {getSettingError("players")}
+              <label>Add players</label>
+              <div>
+                <input 
+                  ref={playerInputRef}
+                  onChange={(e) => handleNewPlayerInput(e)} 
+                  placeholder="user name" 
+                />
+                <button onClick={addPlayer}>Add</button>
+                {
+                  invalidPlayerError
+                  && <p className="error">{invalidPlayerError}</p>
+                }
+              </div>
+              <div className="playerList">
+                {getAddedPlayersComponents()}
+              </div>
+            </div>
+            <div className="startGameContainer">
+              <button 
+              onClick={startGame} 
+              className="startGameButton"
+              >Start game</button>
             </div>
           </div>
-          <div className="startGameContainer">
-            <button 
-            onClick={startGame} 
-            className="startGameButton"
-            >Start game</button>
-          </div>
-          <ScoreButtonGrid />
         </div>
-      </div>
+      </>
     );
   }
 }
