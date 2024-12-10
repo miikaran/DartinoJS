@@ -1,0 +1,34 @@
+
+.gameOverModalContainer{
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(5, 28, 39);
+    color: white;
+    width: 30vw;
+    padding: 30px;
+}
+
+.stats{
+    background-color: rgb(12, 50, 61);
+}
+
+.gameOverOptions{
+    display: flex;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.gameOverButtons{
+    font-size: 1.2em;
+    font-weight: bold;
+    background-color: rgb(48, 128, 175);
+    border: none;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.gameOverButtons:hover{
+    background-color: rgb(28, 84, 117);
+}
