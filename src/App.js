@@ -25,6 +25,9 @@ function App() {
       gameOver, setGameOver
   } = useContext(GameDataContext) 
 
+  const ERROR_PLAYER_EXISTS = "Player already exists";
+  const ERROR_EMPTY_USERNAME = "Player name cannot be empty";
+
   const [newPlayerInput, setNewPlayerInput] = useState("")
   const [invalidPlayerError, setInvalidPlayerError] = useState("")
   const [invalidGameSettings, setInvalidGameSettings] = useState([])
@@ -37,9 +40,6 @@ function App() {
   const handleGameMode = (e) => {
     setGameMode(e.target.value)
   }
-
-  const ERROR_PLAYER_EXISTS = "Player already exists";
-  const ERROR_EMPTY_USERNAME = "Player name cannot be empty";
 
   const handleNewPlayerInput = (event) => {
     const inputUsername = event.target.value;
@@ -85,6 +85,7 @@ function App() {
   const emptyInputOnSubmit = () => {
     playerInputRef.current.value = "";
     playerInputRef.current.focus();
+    setNewPlayerInput("")
   }
 
   const addPlayer = () => {
@@ -118,7 +119,7 @@ function App() {
     const options = gameModes.map((mode) => {
       return <option 
       key={mode}
-      value={mode}>{mode}</option>
+      value={mode}>{mode} UP</option>
     })
     return options
   }
@@ -127,6 +128,7 @@ function App() {
     const userName = player.userName
     const isAdded = players.some((p) => p.userName === userName)
     if(isAdded){
+      players.length <= playerLimit && setInvalidPlayerError("")
       const removableIndex = players.findIndex(p => p.userName === userName)
       const updatedPlayers = [...players]
       updatedPlayers.splice(removableIndex, 1)
@@ -225,59 +227,59 @@ function App() {
     )
   } else {
     return (
-      <>
-        <div className="gameMenuContainer">
-          <div className="gameSettings">
-            <div 
-            uniquetype="mode"
-            className='gameMode'>
-              {getSettingError("mode")}
-              <label>Game mode</label>
-              <select 
-                onChange={(e) => handleGameMode(e)}>
-                {generateGameModeOptions()}
-              </select>
+      <div className="gameMenuContainer">
+        <div className='gameHeader'>
+          Welcome to dartino!
+        </div>
+        <div className="gameSettings">
+          <div 
+          uniquetype="mode"
+          className='gameOption'>
+            <label>Game mode</label>
+            <select 
+              onChange={(e) => handleGameMode(e)}>
+              {generateGameModeOptions()}
+            </select>
+            {getSettingError("mode")}
+          </div>
+          <div 
+          className="gameOption">
+            <label>Legs</label>
+            <select 
+              uniquetype="legsToPlay"
+              onChange={(e) => handleLegsToPlay(e)}>
+              {generateLegOptions()}
+            </select>
+            {getSettingError("legs")}
+          </div>
+          <div 
+          uniquetype="players"
+          className="players gameOption">
+            <label>Add players</label>
+            <input 
+              className='addInput'
+              ref={playerInputRef}
+              onChange={(e) => handleNewPlayerInput(e)} 
+              placeholder="Player name" 
+            />
+            <button className='addPlayer' onClick={addPlayer}>Add</button>
+            <div className="playerList">
+              {getAddedPlayersComponents()}
             </div>
-            <div 
-            className="legs">
-              {getSettingError("legs")}
-              <label>Legs</label>
-              <select 
-                uniquetype="legsToPlay"
-                onChange={(e) => handleLegsToPlay(e)}>
-                {generateLegOptions()}
-              </select>
-            </div>
-            <div 
-            uniquetype="players"
-            className="players">
-              {getSettingError("players")}
-              <label>Add players</label>
-              <div>
-                <input 
-                  ref={playerInputRef}
-                  onChange={(e) => handleNewPlayerInput(e)} 
-                  placeholder="user name" 
-                />
-                <button onClick={addPlayer}>Add</button>
-                {
-                  invalidPlayerError
-                  && <p className="error">{invalidPlayerError}</p>
-                }
-              </div>
-              <div className="playerList">
-                {getAddedPlayersComponents()}
-              </div>
-            </div>
-            <div className="startGameContainer">
-              <button 
-              onClick={startGame} 
-              className="startGameButton"
-              >Start game</button>
-            </div>
+            {
+              invalidPlayerError
+              && <p className="error">{invalidPlayerError}</p>
+            }
+            {getSettingError("players")}
+          </div>
+          <div className="startGameContainer">
+            <button 
+            onClick={startGame} 
+            className="startGameButton"
+            >Start game</button>
           </div>
         </div>
-      </>
+      </div>
     );
   }
 }

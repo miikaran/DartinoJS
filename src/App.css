@@ -1,7 +1,11 @@
 .gameMenuContainer{
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  background-color: rgb(5, 32, 49);
+  height: 100vh;
 }
 
 .gameContainer{
@@ -9,7 +13,7 @@
   justify-content: center;
   padding: 0 20vw;
   align-items: center;
-  background-color: rgb(6, 31, 41);
+  background-color: rgb(26, 83, 105);
 }
 
 .flexWrapper{
@@ -19,16 +23,23 @@
 }
 
 .gameSettings{
-  width: 40%;
+  width: 50%;
   font-size: 1.5em;
-  background-color: rgb(7, 31, 54);
+  background-color: rgb(23, 54, 83);
   color: white;
   padding: 20px;
 }
 
+.gameHeader{
+  color: white;
+  font-weight: bold;
+  font-size: 2em;
+}
+
 .error{
-  color: red;
-  font-size: 0.5em;
+  color: rgb(230, 51, 51);
+  font-size: 0.6em;
+  font-weight: bold;
 }
 
 .playerCards{
@@ -36,10 +47,72 @@
   flex-direction: column;
 }
 
+.addPlayer{
+  color: rgb(253, 253, 253);
+  font-weight: bold;
+  border-radius: 3px;
+  background-color: rgb(64, 135, 194);
+  font-size: 0.8em;
+  padding: 0 10px;
+  border: none;
+}
+
 .gameInfo{
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.gameOption{
+  display: flex;
+  gap: 20px;
+  background-color: rgb(10, 31, 51);
+  padding: 10px 10px;
+}
+
+.players{
+  display: flex;
+}
+
+.playerList{
+  display: flex;
+  gap: 10px;
+}
+
+.addedPlayer{
+  border-radius: 3px;
+  padding: 5px;
+  display: flex;
+  align-self: center;
+  gap: 10px;
+  font-size: 0.8em;
+  background-color: rgb(31, 115, 129);
+}
+
+.addedPlayer button {
+  color: white;
+  font-weight: bold;
+  border-radius: 3px;
+  background-color: #e24141;
+  border: none;
+}
+
+select{
+  background-color: rgb(15, 70, 95);
+  border: 1px solid rgba(255, 255, 255, 0.507);
+  border-radius: 5px;
+  color: white;
+  font-size: 0.8em;
+  font-weight: bold;
+  padding: 0 10px;
+}
+
+.addInput{
+  font-size: 0.65em;
+  font-weight: bold;
+  background-color: rgb(246, 253, 255);
+  border: none;
+  padding: 0 10px;
 }
 
 
@@ -81,7 +154,23 @@
   border: none;
   font-size: 1.3em;
   padding: 5px 10px;
-
 }
+
+.startGameButton{
+  background-color: rgb(34, 95, 119);
+  font-size: 1em;
+  border: none;
+  width: 100%;
+  font-weight: bold;
+  padding: 5px;
+  margin-top: 2%;
+  color: white;
+}
+
+button{
+  cursor: pointer;
+}
+
+
 
 
