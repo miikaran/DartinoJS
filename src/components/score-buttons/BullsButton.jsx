@@ -1,18 +1,18 @@
 import React from "react";
 
-const bullseyeButtons = ["Outer Bull", "Bulls Eye"];
+const BULLS = [
+    { label: "Outer Bull", points: 25 },
+    { label: "Bulls Eye", points: 50 },
+];
 
-/* This component represents the bull buttons */
-const BullsButton = ({ onClick }) => {
-    return (
-        <div className="bullseye-buttons">
-            {bullseyeButtons.map((bullsEyeButtonName, buttonIndex) => (
-                <button key={buttonIndex} className="bull-button" onClick={() => onClick(bullsEyeButtonName, false)}>
-                    {bullsEyeButtonName}
-                </button>
-            ))}
-        </div>
-    )
-}
+const BullsButton = ({ onClick }) => (
+    <div className="bullseye-buttons">
+        {BULLS.map(({ label, points }) => (
+            <button key={label} className="bull-button" onClick={() => onClick(points, true)}>
+                {label}
+            </button>
+        ))}
+    </div>
+);
 
 export default BullsButton;
