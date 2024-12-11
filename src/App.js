@@ -157,7 +157,7 @@ function App() {
     if(!gameModes.includes(gameMode)){
       invalidMessages["mode"] = "Choose valid game mode"
     } 
-    if(!legsToPlay || legsToPlay > legsLimit){
+    if(!legsToPlay || (legsToPlay > legsLimit) || (legsToPlay < 1)){
       invalidMessages["legs"] = "Choose valid legs amount"
     } 
     if(players.length == 0){
@@ -176,6 +176,7 @@ function App() {
       setGameOn(true)
       setTurn(players[0].userName)
       countLegsToWin(legsToPlay)
+      setInvalidGameSettings([])
     }
   }
 

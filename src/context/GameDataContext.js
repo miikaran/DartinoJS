@@ -55,15 +55,19 @@ const GameDataProvider = ({ children }) => {
     }, [gameMode]);
 
     const updateWonGames = useCallback((player) => {
+        const updatedWonGames = (player.wonGames || 0) + 1
+        player.wonGames = updatedWonGames;
+    }, []);
+
+    const updateWonLegs = useCallback((player) => {
         const updatedWonLegs = (player.legsWon || 0) + 1
-        const updatedWonGames = (player.gamesWon || 0) + 1
         player.legsWon = updatedWonLegs;
-        player.wonGames = updatedWonGames
     }, []);
 
     const checkForWin = useCallback((player) => {
         if (player.legsWon >= legsToWin) {
             console.log(`${player.userName} has won the majority of legs: ${player.legsWon}`);
+            updateWonGames(player)
             setWinner(player.userName);
             // If user selects to start game quickly (before timeout has completed)
             // then it will show the previous scores for a moment.
@@ -95,7 +99,7 @@ const GameDataProvider = ({ children }) => {
 
             if (zeroHasBeenReachedWithDoubleScore) {
                 console.log(`Zero reached with double score for ${player.userName}`);
-                updateWonGames(player);
+                updateWonLegs(player);
                 checkForWin(player);
             } else if (isPlayerBusted(updatedPoints)) {
                 updatedPoints.totalPoints = existingPoints.totalPoints;
@@ -105,6 +109,7 @@ const GameDataProvider = ({ children }) => {
             if (areAllThrowsComplete(updatedPoints)) {
                 moveToNextTurn(usernameOfThePlayer);
             }
+        
             return { ...player, points: updatedPoints };
         };
 
@@ -129,7 +134,7 @@ const GameDataProvider = ({ children }) => {
                 return player;
             })
         );
-    }, [checkForWin, players, updateWonGames]);
+    }, [checkForWin, players, updateWonLegs, updateWonGames]);
 
     const addPointsToHistory = useCallback(() => {
         const updatedHistory = { ...history };
@@ -167,24 +172,24 @@ const GameDataProvider = ({ children }) => {
         );
     }, []);
 
-
     // PRO GAME DATA RESETTING v1
     const playAgain = () => {
+        setGameOver(false)
+        setHistory({})
+        setCurrentLeg(1)
+        setCurrentRound(1)
+        setWinner(null)
+        setGameOn(true)
         setPlayers((prevPlayers) => {
             return prevPlayers.map((player) => {
-                console.log(player)
-                const schema = playerDataSchema
+                console.log(players)
+                const schema = {...playerDataSchema}
                 schema.userName = player.userName;
                 schema.wonGames = player.wonGames;
+                schema.legsWon = player.legsWon;
                 return schema
             })
         })
-        setGameOver(false)
-        setCurrentLeg(0)
-        setCurrentRound(0)
-        setTurn(players[0].userName)
-        setWinner(null)
-        setGameOn(true)
     }
 
     // PRO GAME DATA RESETTING v2
