@@ -49,3 +49,33 @@
     color: white;
     box-sizing: border-box;
 }
+
+.special-button:hover {
+    background-color: rgb(34, 102, 122);
+}
+
+/* Bulls buttons container (width of the special-buttons row) */
+.bullseye-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 2%;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 800px;
+}
+
+/* The Bullseye buttons themselves */
+.bull-button {
+    font-size: 1.4em;
+    padding: 40px;
+    width: 100%;
+    background-color: rgb(15, 66, 82);
+    border-radius: 3px;
+    border: none;
+    color: white;
+    box-sizing: border-box;
+}
+
+.bull-button:hover {
+    background-color: rgb(34, 102, 122);
+}
