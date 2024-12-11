@@ -18,7 +18,7 @@ function App() {
       currentLeg, setCurrentLeg,
       currentRound, setCurrentRound,
       legsToPlay, setLegsToPlay,
-      setLegsToWin,
+      legsToWin, setLegsToWin,
       gameOn, setGameOn,
       playerDataSchema,
       winner, setWinner,
@@ -213,7 +213,6 @@ function App() {
     setGameOn(true)
     setPlayers((prevPlayers) => {
         return prevPlayers.map((player) => {
-            console.log(players)
             const schema = {...playerDataSchema}
             schema.userName = player.userName;
             schema.wonGames = player.wonGames;
@@ -236,7 +235,9 @@ function App() {
         <div className='flexWrapper'>
             <div className='gameStatusWrapper'>
               <div className='gameStatus'>
+                <span>Game mode: {gameMode}</span>
                 <span>Leg: {currentLeg}</span>
+                <span>Legs to win: {legsToWin}</span>
                 <span>Turn: {turn}</span>
                 <span>Round: {currentRound}</span>
               </div>

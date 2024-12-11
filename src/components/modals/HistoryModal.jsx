@@ -6,7 +6,8 @@ import "./HistoryModal.css"
 const HistoryModal = ({userName, setHistoryModal}) => {
     const historyInfoHeaders = ["leg", "round", "turnTotal", "totalPoints"]
     const historyInputHeaders = ["Leg", "Round", "1st", "2nd", "3rd", "Turn total", "Total"]
-    const {history, setHistory, setPlayers, currentLeg} = useContext(GameDataContext)
+    const pointKeys = ["firstThrow", "secondThrow", "thirdThrow"]
+    const {history, setHistory, players, setPlayers, currentLeg} = useContext(GameDataContext)
     const modalRef = useRef()
     const [userHistory, setUserHistory] = useState([])
 
@@ -43,6 +44,19 @@ const HistoryModal = ({userName, setHistoryModal}) => {
                 : record
             )
         }
+        /*
+        This is used to check if player is editing the history fields during his/her turn.
+        And add points accumulated during the current turn to the new total points.
+        */
+        let pointsAddedDuringCurrentTurn = 0;
+        const targetPlayerPoints = players.find((p) => p.userName === userName).points
+        if(targetPlayerPoints){
+            pointKeys.forEach((key) => {
+                const points = targetPlayerPoints[key]
+                if(points) pointsAddedDuringCurrentTurn += points
+            })
+        }
+        console.log(pointsAddedDuringCurrentTurn)
         // If more than one history record -> Sync the remaining records
         if (history[userName].length > 1) {
             const [updatedTotalPoints, updatedUserHistory] = updateRemainingHistoryTotalPoints(
@@ -52,17 +66,19 @@ const HistoryModal = ({userName, setHistoryModal}) => {
             updatedHistory[userName] = updatedUserHistory
             updatePlayerTotalPoints(
                 previousValue, key, newValue, 
-                historyRecord, updatedTotalPoints
+                historyRecord, updatedTotalPoints,
+                pointsAddedDuringCurrentTurn
             );
         } else {
             updatePlayerTotalPoints(
                 previousValue, key, 
-                newValue, historyRecord
+                newValue, historyRecord,
+                null, pointsAddedDuringCurrentTurn
             );
         }
         setHistory(updatedHistory);
     };
-    
+
     const updateRemainingHistoryTotalPoints = (
         history, historyIndex, 
         previousValue, newValue
@@ -85,18 +101,19 @@ const HistoryModal = ({userName, setHistoryModal}) => {
     
     const updatePlayerTotalPoints = (
         previousValue, key, newValue,
-        historyRecord, updatedTotalPoints = null
+        historyRecord, updatedTotalPoints = null,
+        pointsAddedDuringCurrentTurn = 0
     ) => {
         setPlayers((prevPlayers) =>
             prevPlayers.map((player) => {
                 if (player.userName !== userName) return player;
                 const totalPoints =
                     updatedTotalPoints !== null
-                    ? updatedTotalPoints
+                    ? updatedTotalPoints - pointsAddedDuringCurrentTurn
                     : calculateNewTotalPoints(
                         previousValue,key,newValue,
                         historyRecord,false,"totalPoints"
-                    ).totalPoints
+                    ).totalPoints - pointsAddedDuringCurrentTurn
                 return {
                     ...player,
                     points: {
@@ -113,7 +130,7 @@ const HistoryModal = ({userName, setHistoryModal}) => {
         historyRecord, calculateAll = true, targetKey = ""
     ) => {
         const calculateTotalPoints = (totalKey) => {
-            if (["firstThrow", "secondThrow", "thirdThrow"].includes(key)) {
+            if (pointKeys.includes(key)) {
                 if (totalKey === "totalPoints") {
                     return historyRecord[totalKey] + (previousValue - newValue)
                 } else if (totalKey === "turnTotal") {

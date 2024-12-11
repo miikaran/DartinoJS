@@ -5,7 +5,7 @@ import PointBox from "./PointBox";
 import HistoryModal from "./modals/HistoryModal";
 
 const PlayerCard = ({player}) => {
-    const { turn, players } = useContext(GameDataContext)
+    const { turn, players, history } = useContext(GameDataContext)
     const [historyModal, setHistoryModal] = useState(false)
 
     const isPlayerTurn = () => turn == player.userName
@@ -16,7 +16,6 @@ const PlayerCard = ({player}) => {
             return player.userName == targetPlayer.userName
         }).legsWon || 0
     }
-
     return(
         <div className={isPlayerTurn() ? "turnHighlight playerCard" : "playerCard"}>
             {
@@ -31,7 +30,10 @@ const PlayerCard = ({player}) => {
                     <span className="userName">🧑 {player.userName}</span>
                     <div className="legsWon">Legs won: {getPlayerLegsWon()}</div>
                 </div>
-                <button onClick={toggleHistoryModal}>Edit history</button>
+                {
+                    history[player.userName]?.length > 0
+                    && <button className="historyButton" onClick={toggleHistoryModal}>View history</button>
+                }
             </div>
             <div className="playerPoints">
                 <PointBox 

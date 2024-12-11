@@ -4,7 +4,6 @@ const Modal = ({children, modalRef, setModal}) => {
 
     const detectClickOutsideModal = (e) => {
         const modalElement = modalRef.current
-        console.log(modalElement, e.target)
         if(modalElement && !modalElement.contains(e.target)){
             setModal(false)
         }

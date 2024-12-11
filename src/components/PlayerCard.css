@@ -67,3 +67,17 @@
     font-size: 1.3em;
     font-weight: bold;
 }
+
+.historyButton{
+    border-radius: 5px;
+    background-color: rgb(62, 143, 180);
+    color: white;
+    font-size: 0.9em;
+    font-weight: bold;
+    padding: 7px 10px;
+    border: none;
+}
+
+.historyButton:hover{
+    background-color: rgb(57, 135, 172);
+}
