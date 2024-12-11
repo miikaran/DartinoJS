@@ -142,36 +142,6 @@ select{
   width: 100%;
 }
 
-.modal{
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  background-color: rgba(0, 0, 0, 0.445);
-  position: fixed;
-  z-index: 1;
-}
-
-.modalContent{
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: start;
-  background-color: #010d13;
-  margin: 15% auto;
-  height: fit-content;
-  width: fit-content;
-}
-
-.close{
-  align-self: start;
-  background-color: rgb(216, 77, 77);
-  color: white;
-  border: none;
-  font-size: 1.3em;
-  padding: 5px 10px;
-}
-
 .startGameButton{
   background-color: rgb(34, 95, 119);
   font-size: 1em;
@@ -185,6 +155,36 @@ select{
 
 button{
   cursor: pointer;
+}
+
+.modal{
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.445);
+  position: fixed;
+  z-index: 1;
+}
+
+.modalContent{
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: start;
+background-color: #010d13;
+margin: 15% auto;
+height: fit-content;
+width: fit-content;
+}
+
+.close{
+align-self: start;
+background-color: rgb(216, 77, 77);
+color: white;
+border: none;
+font-size: 1.3em;
+padding: 5px 10px;
 }
 
 

@@ -187,7 +187,7 @@ const HistoryModal = ({userName, setHistoryModal}) => {
         <Modal 
         modalRef={modalRef}
         setModal={setHistoryModal}>
-            <div>
+            <div ref={modalRef}>
                 <table className="historyContainer">
                     <thead className="historyTableHeaders">{getHistoryTableHeaders()}</thead>
                     <tbody className="historyTableBody">{getUserHistoryList()}</tbody>
