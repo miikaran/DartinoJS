@@ -172,26 +172,6 @@ const GameDataProvider = ({ children }) => {
         );
     }, []);
 
-    // PRO GAME DATA RESETTING v1
-    const playAgain = () => {
-        setGameOver(false)
-        setHistory({})
-        setCurrentLeg(1)
-        setCurrentRound(1)
-        setWinner(null)
-        setGameOn(true)
-        setPlayers((prevPlayers) => {
-            return prevPlayers.map((player) => {
-                console.log(players)
-                const schema = {...playerDataSchema}
-                schema.userName = player.userName;
-                schema.wonGames = player.wonGames;
-                schema.legsWon = player.legsWon;
-                return schema
-            })
-        })
-    }
-
     // PRO GAME DATA RESETTING v2
     const resetGameData = () => {
         setGameOver(false)
@@ -239,7 +219,7 @@ const GameDataProvider = ({ children }) => {
         playerDataSchema,
         winner, setWinner,
         gameOver, setGameOver,
-        resetGameData, playAgain
+        resetGameData
     };
 
     return (

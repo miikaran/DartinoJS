@@ -16,13 +16,14 @@ function App() {
       gameMode, setGameMode,
       turn, setTurn,
       currentLeg, setCurrentLeg,
-      currentRound,
+      currentRound, setCurrentRound,
       legsToPlay, setLegsToPlay,
       setLegsToWin,
       gameOn, setGameOn,
       playerDataSchema,
-      winner,
-      gameOver, setGameOver
+      winner, setWinner,
+      gameOver, setGameOver,
+      setHistory
   } = useContext(GameDataContext) 
 
   const ERROR_PLAYER_EXISTS = "Player already exists";
@@ -196,20 +197,41 @@ function App() {
   }
 
   const countLegsToWin = (chosenLegAmount) => {
-    setLegsToWin(() => 
-      chosenLegAmount % 2 == 0 
-      ? (chosenLegAmount / 2) + 1
-      : Math.ceil(chosenLegAmount/2)
-  )
+      setLegsToWin(() => 
+        chosenLegAmount % 2 == 0 
+        ? (chosenLegAmount / 2) + 1
+        : Math.ceil(chosenLegAmount/2)
+    )
+  }
 
-}
+  const playAgain = () => {
+    setGameOver(false)
+    setHistory({})
+    setCurrentLeg(1)
+    setCurrentRound(1)
+    setWinner(null)
+    setGameOn(true)
+    setPlayers((prevPlayers) => {
+        return prevPlayers.map((player) => {
+            console.log(players)
+            const schema = {...playerDataSchema}
+            schema.userName = player.userName;
+            schema.wonGames = player.wonGames;
+            schema.legsWon = player.legsWon;
+            return schema
+        })
+    })
+  }
+
 
   if(gameOn || gameOver){
     return(
       <div className='gameContainer'>
         {
           winner && gameOver
-          && <GameOverModal setGameOverModal={setGameOver}  />
+          && <GameOverModal 
+          setGameOverModal={setGameOver}
+          playAgain={playAgain}  />
         }
         <div className='flexWrapper'>
             <div className='gameStatusWrapper'>

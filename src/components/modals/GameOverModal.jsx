@@ -3,8 +3,8 @@ import { useContext, useRef } from "react"
 import Modal from "./Modal"
 import "./GameOverModal.css"
 
-const GameOverModal = ({setGameOverModal}) => {
-    const {winner, players, resetGameData, playAgain} = useContext(GameDataContext)
+const GameOverModal = ({setGameOverModal, playAgain}) => {
+    const {winner, players, resetGameData} = useContext(GameDataContext)
     const gameOverModalRef = useRef()
 
     const getPlayersStats = () => {
