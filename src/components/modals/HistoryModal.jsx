@@ -24,7 +24,7 @@ const HistoryModal = ({userName, setHistoryModal}) => {
     ) => {
         if (!historyRecord) return;
         const previousValue = historyRecord[key];
-        const newValue = parseInt(event.target.value) || previousValue || 0;
+        const newValue = parseInt(event.target.value) || 0;
         /* 
         Doing multiple same state updates in this function,
         so have to create a base for async reasons

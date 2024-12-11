@@ -20,7 +20,10 @@ const ScoreButtonHandler = () => {
         const specialKey = button.charAt(0).toUpperCase();
         if (specialKey === "U") {
             handleUndo();
-        } else if (specialKey === "D" || specialKey === "T" || specialKey === "O") {
+        } else if (specialKey === "O") {
+            handleOut();
+        }
+        else if (specialKey === "D" || specialKey === "T") {
             setActiveSpecial(specialKey);
         } else {
             console.warn(`Unhandled special button: ${button}`);
@@ -39,6 +42,12 @@ const ScoreButtonHandler = () => {
         }
     };
 
+    const handleOut = () => {
+        console.log("Player chose out = didn't hit target.")
+        handleNumber(-1)
+        setActiveSpecial(null);
+    }
+
     const handleUndo = () => {
         console.log("Undo action triggered.");
         setActiveSpecial(null);
@@ -48,7 +57,6 @@ const ScoreButtonHandler = () => {
         switch (special) {
             case "D": return number * 2;
             case "T": return number * 3;
-            case "O": return 0;
             default: throw new Error(`Unknown special action: ${special}`);
         }
     };
@@ -69,9 +77,9 @@ const ScoreButtonHandler = () => {
     };
 
     const findNextEmptyThrow = (points) => {
-        if (!points.firstThrow) return "firstThrow";
-        if (!points.secondThrow) return "secondThrow";
-        if (!points.thirdThrow) return "thirdThrow";
+        if (points.firstThrow === "") return "firstThrow";
+        if (points.secondThrow === "") return "secondThrow";
+        if (points.thirdThrow === "") return "thirdThrow";
         return null;
     };
 

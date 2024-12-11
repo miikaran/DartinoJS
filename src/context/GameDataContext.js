@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState, useCallback } from 'react';
+import React, {createContext, useCallback, useEffect, useState} from 'react';
 
 export const GameDataContext = createContext(undefined);
 
@@ -21,16 +21,16 @@ const GameDataProvider = ({ children }) => {
         "points": {
           "turnPoints": 0,
           "totalPoints": gameMode || 501,
-          "firstThrow": 0,
-          "secondThrow": 0,
-          "thirdThrow": 0
+          "firstThrow": "",
+          "secondThrow": "",
+          "thirdThrow": ""
         }
       }
 
     const areAllThrowsComplete = (points) =>
-        points.firstThrow !== 0 
-        && points.secondThrow !== 0 
-        && points.thirdThrow !== 0;
+        points.firstThrow !== ""
+        && points.secondThrow !== ""
+        && points.thirdThrow !== "";
 
     const initializeThrowsForNewLeg = useCallback(() => {
         setCurrentRound(1);
@@ -40,9 +40,9 @@ const GameDataProvider = ({ children }) => {
             setPlayers((prevPlayers) =>
                 prevPlayers.map((p) => {
                     const newPoints = {
-                        firstThrow: 0,
-                        secondThrow: 0,
-                        thirdThrow: 0,
+                        firstThrow: "",
+                        secondThrow: "",
+                        thirdThrow: "",
                         turnPoints: 0,
                         totalPoints: gameMode,
                     };
@@ -55,13 +55,11 @@ const GameDataProvider = ({ children }) => {
     }, [gameMode]);
 
     const updateWonGames = useCallback((player) => {
-        const updatedWonGames = (player.wonGames || 0) + 1
-        player.wonGames = updatedWonGames;
+        player.wonGames = (player.wonGames || 0) + 1;
     }, []);
 
     const updateWonLegs = useCallback((player) => {
-        const updatedWonLegs = (player.legsWon || 0) + 1
-        player.legsWon = updatedWonLegs;
+        player.legsWon = (player.legsWon || 0) + 1;
     }, []);
 
     const checkForWin = useCallback((player) => {
@@ -78,17 +76,17 @@ const GameDataProvider = ({ children }) => {
             console.log(`Starting new leg for player: ${player.userName}`);
             initializeThrowsForNewLeg();
         }
-    }, [initializeThrowsForNewLeg, legsToPlay, players]);
+    }, [initializeThrowsForNewLeg, legsToWin, updateWonGames]);
 
     const updatePlayerPoints = useCallback((usernameOfThePlayer, pointType, newValue, isDoubleValue) => {
         const updatePoints = (player) => {
             const existingPoints = player.points;
             const updatedPoints = { ...existingPoints, [pointType]: newValue };
             const newTurnPoints =
-                (updatedPoints.firstThrow || 0) +
-                (updatedPoints.secondThrow || 0) +
-                (updatedPoints.thirdThrow || 0);
-            const newTotalPoints = player.points.totalPoints - newTurnPoints + updatedPoints.turnPoints;
+                (updatedPoints.firstThrow === "" ? 0 : Number(updatedPoints.firstThrow)) +
+                (updatedPoints.secondThrow === "" ? 0 : Number(updatedPoints.secondThrow)) +
+                (updatedPoints.thirdThrow === "" ? 0 : Number(updatedPoints.thirdThrow));
+            const newTotalPoints = existingPoints.totalPoints - newTurnPoints + updatedPoints.turnPoints;
             updatedPoints.turnPoints = newTurnPoints;
             updatedPoints.totalPoints = newTotalPoints;
 
@@ -109,7 +107,7 @@ const GameDataProvider = ({ children }) => {
             if (areAllThrowsComplete(updatedPoints)) {
                 moveToNextTurn(usernameOfThePlayer);
             }
-        
+
             return { ...player, points: updatedPoints };
         };
 
@@ -134,7 +132,10 @@ const GameDataProvider = ({ children }) => {
                 return player;
             })
         );
-    }, [checkForWin, players, updateWonLegs, updateWonGames]);
+    }, [checkForWin, players, updateWonLegs]);
+
+
+
 
     const addPointsToHistory = useCallback(() => {
         const updatedHistory = { ...history };
@@ -162,9 +163,9 @@ const GameDataProvider = ({ children }) => {
             prevPlayers.map((p) => ({
                 ...p,
                 points: {
-                    firstThrow: 0,
-                    secondThrow: 0,
-                    thirdThrow: 0,
+                    firstThrow: "",
+                    secondThrow: "",
+                    thirdThrow: "",
                     turnPoints: 0,
                     totalPoints: p.points.totalPoints,
                 },
