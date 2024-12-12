@@ -4,6 +4,7 @@ import { GameDataContext } from './context/GameDataContext';
 import PlayerCard from './components/PlayerCard';
 import ScoreButtonGrid from './components/score-buttons/ScoreButtonGrid';
 import GameOverModal from './components/modals/GameOverModal';
+import ScoreBoard from './components/ScoreBoard'
 
 function App() {
 
@@ -197,11 +198,15 @@ function App() {
   }
 
   const countLegsToWin = (chosenLegAmount) => {
+    if(players.length === 1){
+      setLegsToWin(chosenLegAmount)
+    } else {
       setLegsToWin(() => 
         chosenLegAmount % 2 == 0 
         ? (chosenLegAmount / 2) + 1
         : Math.ceil(chosenLegAmount/2)
-    )
+      )
+    }
   }
 
   const playAgain = () => {
@@ -306,6 +311,7 @@ function App() {
             className="startGameButton"
             >Start game</button>
           </div>
+          <ScoreBoard />
         </div>
       </div>
     );

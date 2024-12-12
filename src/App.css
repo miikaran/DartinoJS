@@ -143,14 +143,19 @@ select{
 }
 
 .startGameButton{
-  background-color: rgb(34, 95, 119);
+  background-color: rgb(19, 88, 116);
   font-size: 1em;
   border: none;
   width: 100%;
   font-weight: bold;
   padding: 5px;
+  border-radius: 5px;
   margin-top: 2%;
   color: white;
+}
+
+.startGameButton:hover{
+  background-color: rgb(41, 107, 136);
 }
 
 button{
@@ -186,6 +191,52 @@ border: none;
 font-size: 1.3em;
 padding: 5px 10px;
 }
+
+.scoreBoard{
+  font-size: 0.8em;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  max-height: 30vh;
+  overflow-y: scroll;
+  color: rgb(255, 255, 255);
+}
+
+.scoreRecords{ 
+  border-radius: 5px;
+  width: 100%;
+  text-align: left;
+  background-color: rgb(5, 27, 39);
+}
+
+.scoreRecordsHead{
+  background-color: rgba(13, 63, 71, 0.479);
+}
+
+.scoreRecordsHead th{
+  padding: 10px;
+}
+
+.scoreRecordsBody td{
+  padding: 10px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: #888; 
+} 
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
 
 
 

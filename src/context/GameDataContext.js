@@ -1,4 +1,5 @@
 import React, {createContext, useCallback, useEffect, useState} from 'react';
+import { putParsedValueToStorage, getParsedValueByKey } from '../utils/localstorage';
 
 export const GameDataContext = createContext(undefined);
 
@@ -25,7 +26,8 @@ const GameDataProvider = ({ children }) => {
           "secondThrow": "",
           "thirdThrow": ""
         }
-      }
+    }
+    const SCORE_BOARD_RECORDS_KEY = "scoreBoard"    
 
     const areAllThrowsComplete = (points) =>
         points.firstThrow !== ""
@@ -62,10 +64,35 @@ const GameDataProvider = ({ children }) => {
         player.legsWon = (player.legsWon || 0) + 1;
     }, []);
 
+    const updateToLocalStorage = winner => {
+        let currStored = getParsedValueByKey(SCORE_BOARD_RECORDS_KEY) || []
+        const newRecord = {
+             time: new Date().toLocaleString(),
+             winner: winner.userName,
+             players: players.map((p) => p.userName),
+             roundsToWin: legsToWin,
+             playersWonRounds: [
+                ...players.map((p) => {
+                    return p.userName !== winner.userName
+                    ? p.legsWon
+                    : winner.legsWon
+                })
+            ]
+        }
+        currStored 
+        ? currStored.push(newRecord) 
+        : currStored = [newRecord]
+        putParsedValueToStorage(
+            SCORE_BOARD_RECORDS_KEY, 
+            currStored
+        )
+    }
+
     const checkForWin = useCallback((player) => {
         if (player.legsWon >= legsToWin) {
             console.log(`${player.userName} has won the majority of legs: ${player.legsWon}`);
             updateWonGames(player)
+            updateToLocalStorage(player)
             setWinner(player.userName);
             // If user selects to start game quickly (before timeout has completed)
             // then it will show the previous scores for a moment.
@@ -220,7 +247,8 @@ const GameDataProvider = ({ children }) => {
         playerDataSchema,
         winner, setWinner,
         gameOver, setGameOver,
-        resetGameData
+        resetGameData,
+        SCORE_BOARD_RECORDS_KEY
     };
 
     return (
