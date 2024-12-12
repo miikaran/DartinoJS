@@ -2,20 +2,19 @@
 .score-button-grid {
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
 /* This is to create the 5 column grid.
  * 5 by 4 grid, for numbered buttons */
 .numbered-buttons {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(7, 1fr);
     grid-gap: 10px;
 }
 
 /* The actual numbered button */
 .numbered-button {
-    padding: 40px;
+    padding: 2vw;
     font-size: 1.4em;
     font-weight: bold;
     width: 100%;
@@ -41,7 +40,7 @@
 /* The actual special button */
 .special-button {
     font-size: 1.4em;
-    padding: 40px;
+    padding: 2vw;
     width: 100%;
     background-color: rgb(15, 66, 82);
     border-radius: 3px;
@@ -57,7 +56,6 @@
 /* Bulls buttons container (width of the special-buttons row) */
 .bullseye-buttons {
     display: flex;
-    justify-content: center;
     gap: 2%;
     margin-top: 20px;
     width: 100%;
@@ -67,7 +65,7 @@
 /* The Bullseye buttons themselves */
 .bull-button {
     font-size: 1.4em;
-    padding: 40px;
+    padding: 3vw;
     width: 100%;
     background-color: rgb(15, 66, 82);
     border-radius: 3px;

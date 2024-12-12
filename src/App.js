@@ -240,11 +240,11 @@ function App() {
         <div className='flexWrapper'>
             <div className='gameStatusWrapper'>
               <div className='gameStatus'>
-                <span>Game mode: {gameMode}</span>
-                <span>Leg: {currentLeg}</span>
-                <span>Legs to win: {legsToWin}</span>
-                <span>Turn: {turn}</span>
-                <span>Round: {currentRound}</span>
+                <span><b>Game mode:</b> {gameMode}</span>
+                <span><b>Leg:</b> {currentLeg}</span>
+                <span><b>Legs to win:</b> {legsToWin}</span>
+                <span><b>Turn:</b> {turn}</span>
+                <span><b>Round:</b> {currentRound}</span>
               </div>
             </div>
             <div className='gameInfoWrapper'>
