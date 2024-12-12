@@ -113,9 +113,14 @@ const GameDataProvider = ({ children }) => {
                 (updatedPoints.firstThrow === "" ? 0 : Number(updatedPoints.firstThrow)) +
                 (updatedPoints.secondThrow === "" ? 0 : Number(updatedPoints.secondThrow)) +
                 (updatedPoints.thirdThrow === "" ? 0 : Number(updatedPoints.thirdThrow));
-            const newTotalPoints = existingPoints.totalPoints - newTurnPoints + updatedPoints.turnPoints;
-            updatedPoints.turnPoints = newTurnPoints;
-            updatedPoints.totalPoints = newTotalPoints;
+            const possibleTotalPoints = existingPoints.totalPoints - newTurnPoints + updatedPoints.turnPoints;
+
+            if (isDoubleValue && possibleTotalPoints < 0) {
+                updatedPoints.totalPoints = existingPoints.totalPoints;
+            } else {
+                updatedPoints.turnPoints = newTurnPoints;
+                updatedPoints.totalPoints = possibleTotalPoints;
+            }
 
             console.log(`Updated Points for ${player.userName}:`, updatedPoints);
 
