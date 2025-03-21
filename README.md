@@ -1,5 +1,14 @@
 # DartinoJS - Scoreboard manager for the Darts game
+### Fully functioning web-application built for managing scores in the Darts game.
 
+### Features:
+- Game modes (501 & 301 up)
+- Legs to win a round (1 - x)
+- Multiplayer mode
+- Game results persistence (localstorage)
+- Score history manager
+
+<br>
 
 <img width="959" alt="dartino_4" src="https://github.com/user-attachments/assets/7c6fdefc-f216-4db0-a7d4-37b8f89b21e6" />
 
