@@ -1,5 +1,4 @@
 # DartinoJS - Scoreboard manager for the Darts game
-#### Fully functioning web-application built for managing scores in the Darts game.
 
 #### Features:
 - Game modes (501 & 301 up)
