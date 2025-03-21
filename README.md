@@ -3,7 +3,7 @@
 #### Features:
 - Game modes (501 & 301 up)
 - Legs to win a round (1 - x)
-- Multiplayer mode
+- Single & Multiplayer modes
 - Game results persistence (localstorage)
 - Score history manager
 
